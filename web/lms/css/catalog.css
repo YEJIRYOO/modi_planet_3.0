@@ -1,0 +1,346 @@
+/* MODI Planet LMS — 교육과정 첫 화면: 히어로, 통계, 레벨 카드
+   lms.css 의 @import 순서에 기대는 파일이다. 순서를 바꾸면 캐스케이드가 달라진다. */
+
+.page-container {
+  width: min(1200px, calc(100% - 48px));
+  margin: 0 auto;
+}
+
+.catalog-hero {
+  position: relative;
+  display: grid;
+  min-height: 420px;
+  grid-template-columns: minmax(0, 1.13fr) minmax(330px, 0.87fr);
+  gap: 58px;
+  align-items: center;
+  padding: 68px 0 48px;
+  overflow: hidden;
+}
+
+.hero-copy {
+  position: relative;
+  z-index: 1;
+}
+
+.hero-badge,
+.section-kicker,
+.course-kicker,
+.dialog-kicker {
+  margin: 0 0 16px;
+  color: var(--brand-dark);
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 8px 12px;
+  color: var(--brand-dark);
+  background: var(--brand-4);
+  border: 1px solid var(--brand-3);
+  border-radius: 999px;
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+.hero-badge::before {
+  width: 7px;
+  height: 7px;
+  background: var(--brand);
+  border-radius: 50%;
+  content: "";
+}
+
+.catalog-hero h1 {
+  max-width: 720px;
+  margin: 0;
+  font-size: clamp(43px, 5.4vw, 72px);
+  font-weight: 790;
+  letter-spacing: -0.045em;
+  line-height: 1.08;
+}
+
+.catalog-hero h1 em {
+  color: var(--brand);
+  font-style: normal;
+}
+
+.hero-copy > p:last-of-type {
+  max-width: 640px;
+  margin: 24px 0 0;
+  color: var(--ink-sub);
+  font-size: 18px;
+  line-height: 1.75;
+}
+
+.hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 30px;
+}
+
+.hero-action {
+  display: inline-flex;
+  min-height: 50px;
+  padding: 12px 21px;
+  align-items: center;
+  gap: 10px;
+  color: #fff;
+  background: var(--ink);
+  border: 0;
+  border-radius: 999px;
+  font-weight: 730;
+  text-decoration: none;
+}
+
+.hero-action.light {
+  color: var(--ink);
+  background: var(--surface-soft);
+  border: 1px solid var(--line);
+}
+
+.hero-visual {
+  position: relative;
+  min-height: 330px;
+}
+
+.hero-visual::before,
+.hero-visual::after {
+  position: absolute;
+  border-radius: 50%;
+  content: "";
+}
+
+.hero-visual::before {
+  inset: 8px 14px 16px 18px;
+  background: linear-gradient(135deg, var(--brand-3), #fff0e5 46%, #f2efff);
+}
+
+.hero-visual::after {
+  right: -30px;
+  bottom: -50px;
+  width: 170px;
+  height: 170px;
+  background: rgba(255, 127, 109, 0.18);
+  filter: blur(2px);
+}
+
+.hero-course-stack {
+  position: absolute;
+  z-index: 2;
+  inset: 33px 16px 20px 32px;
+}
+
+.hero-course-card {
+  position: absolute;
+  width: 210px;
+  overflow: hidden;
+  background: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.9);
+  border-radius: 22px;
+  box-shadow: 0 18px 46px rgba(66, 46, 43, 0.15);
+}
+
+.hero-course-card:nth-child(1) { left: 0; top: 46px; transform: rotate(-6deg); }
+.hero-course-card:nth-child(2) { right: 2px; top: 0; transform: rotate(5deg); }
+.hero-course-card:nth-child(3) { right: 36px; bottom: 0; transform: rotate(-1deg); }
+
+.hero-course-card img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 1.5;
+  object-fit: cover;
+}
+
+.hero-course-card strong {
+  display: block;
+  padding: 12px 14px 13px;
+  font-size: 13px;
+}
+
+.stat-strip {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  margin-bottom: 88px;
+  padding: 22px 8px;
+  background: var(--surface-soft);
+  border: 1px solid var(--line);
+  border-radius: 22px;
+}
+
+.stat-item {
+  display: grid;
+  min-height: 66px;
+  place-items: center;
+  align-content: center;
+  border-right: 1px solid var(--line-strong);
+}
+
+.stat-item:last-child {
+  border-right: 0;
+}
+
+.stat-item strong {
+  font-size: 24px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+
+.stat-item span {
+  color: var(--ink-muted);
+  font-size: 13px;
+}
+
+.level-section {
+  padding-bottom: 100px;
+}
+
+.section-heading {
+  display: flex;
+  margin-bottom: 28px;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 24px;
+}
+
+.section-heading h2 {
+  margin: 0;
+  font-size: clamp(30px, 4vw, 44px);
+  letter-spacing: -0.035em;
+  line-height: 1.18;
+}
+
+.section-heading p:not(.section-kicker) {
+  max-width: 500px;
+  margin: 0;
+  color: var(--ink-muted);
+  text-align: right;
+}
+
+.level-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+
+.level-card {
+  position: relative;
+  display: flex;
+  min-width: 0;
+  min-height: 470px;
+  padding: 0;
+  flex-direction: column;
+  overflow: hidden;
+  color: inherit;
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 24px;
+  box-shadow: none;
+  text-align: left;
+  transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease;
+}
+
+.level-card:hover {
+  border-color: var(--brand-2);
+  box-shadow: var(--shadow);
+  transform: translateY(-5px);
+}
+
+.level-thumb {
+  position: relative;
+  height: 215px;
+  overflow: hidden;
+  background: linear-gradient(145deg, var(--brand-3), var(--brand-4));
+}
+
+.level-card:nth-child(2) .level-thumb { background: linear-gradient(145deg, #e8f6ec, #eff9f3); }
+.level-card:nth-child(3) .level-thumb { background: linear-gradient(145deg, #edf3f8, #f5f3ff); }
+
+.level-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 220ms ease;
+}
+
+.level-card:hover .level-thumb img {
+  transform: scale(1.025);
+}
+
+.difficulty {
+  position: absolute;
+  z-index: 2;
+  left: 16px;
+  top: 16px;
+  padding: 7px 11px;
+  color: #fff;
+  background: rgba(43, 41, 41, 0.88);
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 750;
+  backdrop-filter: blur(9px);
+}
+
+.level-content {
+  display: flex;
+  padding: 24px;
+  flex: 1;
+  flex-direction: column;
+}
+
+.level-meta {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  color: var(--brand-dark);
+  font-size: 13px;
+  font-weight: 720;
+}
+
+.level-meta span + span::before {
+  margin-right: 7px;
+  color: var(--line-strong);
+  content: "•";
+}
+
+.level-card h3 {
+  margin: 12px 0 8px;
+  font-size: 25px;
+  letter-spacing: -0.025em;
+  line-height: 1.25;
+}
+
+.level-card p {
+  display: -webkit-box;
+  margin: 0;
+  overflow: hidden;
+  color: var(--ink-muted);
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+}
+
+.level-footer {
+  display: flex;
+  margin-top: auto;
+  padding-top: 23px;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 13px;
+  font-weight: 730;
+}
+
+.level-footer b {
+  display: inline-grid;
+  width: 35px;
+  height: 35px;
+  color: #fff;
+  background: var(--ink);
+  border-radius: 50%;
+  place-items: center;
+  font-size: 18px;
+}

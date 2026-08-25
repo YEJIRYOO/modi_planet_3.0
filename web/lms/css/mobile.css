@@ -1,0 +1,580 @@
+/* MODI Planet LMS — 모바일 패스: 터치 타깃, 세이프 에어리어, 활동실 시트
+   lms.css 의 @import 순서에 기대는 파일이다. 순서를 바꾸면 캐스케이드가 달라진다. */
+
+/* Mobile classroom pass: touch targets, safe areas, and explicit studio controls. */
+.mode-chip.hw {
+  color: #176d3a;
+}
+
+.mode-chip.webhw {
+  color: #94520f;
+}
+
+.icon-button,
+.lesson-actions button {
+  min-height: 44px;
+}
+
+.dialog-body {
+  min-height: 0;
+  overscroll-behavior: contain;
+}
+
+@media (max-width: 980px) {
+  .mobile-player-actions {
+    display: grid;
+    padding-top: 10px;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+  }
+
+  .mobile-tool-button {
+    min-width: 0;
+    min-height: 44px;
+    padding: 9px 12px;
+    color: var(--blue);
+    background: var(--blue-soft);
+    border: 1px solid #d4e2ee;
+    border-radius: 12px;
+    font-size: 13px;
+    font-weight: 750;
+  }
+
+  .mobile-tool-button.primary {
+    color: #fff;
+    background: var(--ink);
+    border-color: var(--ink);
+  }
+
+  .mobile-tool-button.active {
+    color: #fff;
+    background: var(--blue);
+    border-color: var(--blue);
+  }
+
+  .studio-mobile-header {
+    display: flex;
+    min-height: 60px;
+    padding: 9px 12px 9px 18px;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .studio-mobile-header strong,
+  .studio-mobile-header span {
+    display: block;
+  }
+
+  .studio-mobile-header strong {
+    font-size: 15px;
+  }
+
+  .studio-mobile-header span {
+    margin-top: 2px;
+    color: var(--ink-muted);
+    font-size: 11px;
+  }
+
+  .studio-mobile-header button {
+    display: grid;
+    width: 44px;
+    height: 44px;
+    flex: 0 0 auto;
+    place-items: center;
+    color: var(--ink-sub);
+    background: var(--surface-soft);
+    border: 0;
+    border-radius: 50%;
+    font-size: 25px;
+  }
+
+  .studio-backdrop {
+    position: fixed;
+    z-index: 29;
+    inset: 70px 0 0;
+    display: block;
+    width: 100%;
+    padding: 0;
+    pointer-events: none;
+    background: rgba(24, 23, 23, 0.42);
+    border: 0;
+    opacity: 0;
+    transition: opacity 180ms ease;
+  }
+
+  .studio-backdrop.open {
+    pointer-events: auto;
+    opacity: 1;
+  }
+
+  .learning-studio {
+    position: fixed;
+    z-index: 30;
+    top: 70px;
+    right: 0;
+    bottom: 0;
+    width: min(420px, 92vw);
+    height: calc(100vh - 70px);
+    height: calc(100dvh - 70px);
+    max-height: none;
+    pointer-events: none;
+    visibility: hidden;
+    transform: translateX(100%);
+    transition: transform 200ms ease, visibility 0s linear 200ms;
+    box-shadow: -18px 0 48px rgba(43, 41, 41, 0.16);
+  }
+
+  .learning-studio.mobile-open {
+    pointer-events: auto;
+    visibility: visible;
+    transform: translateX(0);
+    transition-delay: 0s;
+  }
+
+  .tutor-composer {
+    margin-bottom: max(13px, env(safe-area-inset-bottom));
+  }
+}
+
+@media (max-width: 720px) {
+  .catalog-layout {
+    width: 100%;
+  }
+
+  .course-main {
+    padding-right: 16px;
+    padding-left: 16px;
+  }
+
+  .lesson-card {
+    min-height: auto;
+    padding: 19px;
+  }
+
+  .mode-tabs {
+    display: grid;
+    overflow: visible;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .mode-tabs button {
+    min-width: 0;
+    min-height: 44px;
+    padding: 8px 9px;
+    white-space: normal;
+  }
+
+  .plan-dialog {
+    max-height: calc(100vh - 16px);
+    max-height: calc(100dvh - 16px);
+  }
+
+  .dialog-shell {
+    max-height: calc(100vh - 16px);
+    max-height: calc(100dvh - 16px);
+  }
+
+  .dialog-header h2 {
+    font-size: 23px;
+  }
+
+  .dialog-footer {
+    padding-bottom: max(18px, env(safe-area-inset-bottom));
+  }
+
+  .dialog-footer button {
+    min-width: 0;
+    flex: 1;
+  }
+
+  .timeline-row {
+    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-rows: auto auto;
+  }
+
+  .timeline-row .phase {
+    grid-column: 1;
+    grid-row: 1;
+  }
+
+  .timeline-row .minutes {
+    grid-column: 2;
+    grid-row: 1;
+  }
+
+  .timeline-row strong {
+    grid-column: 1 / -1;
+    grid-row: 2;
+  }
+
+  .rubric-wrap {
+    overflow: visible;
+    border: 0;
+    border-radius: 0;
+  }
+
+  .rubric-table,
+  .rubric-table tbody,
+  .rubric-table tr,
+  .rubric-table th,
+  .rubric-table td {
+    display: block;
+    width: 100%;
+  }
+
+  .rubric-table {
+    min-width: 0;
+    background: transparent;
+    font-size: 13px;
+  }
+
+  .rubric-table thead {
+    display: none;
+  }
+
+  .rubric-table tbody {
+    display: grid;
+    gap: 10px;
+  }
+
+  .rubric-table tr {
+    overflow: hidden;
+    background: #fff;
+    border: 1px solid var(--line-strong);
+    border-radius: 13px;
+  }
+
+  .rubric-table th,
+  .rubric-table td {
+    padding: 10px 12px;
+    border-right: 0;
+  }
+
+  .rubric-table tbody th {
+    color: var(--blue);
+    background: var(--blue-soft);
+  }
+
+  .rubric-table td::before {
+    display: block;
+    margin-bottom: 3px;
+    color: var(--ink);
+    content: attr(data-label);
+    font-size: 11px;
+    font-weight: 800;
+  }
+
+  .player-header {
+    min-height: 70px;
+    padding-top: max(10px, env(safe-area-inset-top));
+  }
+
+  .slide-stage {
+    padding-bottom: max(10px, env(safe-area-inset-bottom));
+  }
+
+  .slide-card {
+    padding: 25px 20px;
+  }
+
+  .slide-card h2 {
+    font-size: 25px;
+  }
+
+  .slide-controls {
+    grid-template-columns: minmax(64px, auto) minmax(0, 1fr) minmax(64px, auto);
+    gap: 7px;
+  }
+
+  .slide-controls button {
+    min-width: 0;
+    min-height: 44px;
+    padding: 8px 10px;
+  }
+
+  .slide-progress-wrap {
+    min-width: 0;
+    gap: 6px;
+  }
+
+  .slide-progress {
+    min-width: 0;
+  }
+
+  #slideCounter {
+    min-width: 34px;
+  }
+
+  .learning-studio {
+    top: auto;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: min(76vh, 640px);
+    height: min(76dvh, 640px);
+    border-top: 1px solid var(--line);
+    border-left: 0;
+    border-radius: 22px 22px 0 0;
+    transform: translateY(100%);
+    box-shadow: 0 -18px 52px rgba(43, 41, 41, 0.18);
+  }
+
+  .learning-studio.mobile-open {
+    transform: translateY(0);
+  }
+
+  .studio-body {
+    padding: 16px;
+  }
+
+  .studio-tabs button,
+  .activity-panel > p,
+  .modi-panel > p,
+  .prompt-button,
+  .activity-checklist label,
+  .material-chips span,
+  .chat-message,
+  .teacher-note {
+    font-size: 14px;
+  }
+
+  .tutor-composer textarea {
+    font-size: 16px;
+  }
+
+  .example-scenario {
+    display: grid;
+  }
+
+  .mini-list,
+  .vocabulary-item span,
+  .vocabulary-item small,
+  .issue-head,
+  .issue-table article {
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 680px) {
+  .history-rail {
+    height: calc(64px + env(safe-area-inset-top));
+    padding-top: env(safe-area-inset-top);
+  }
+
+  .new-start-button {
+    display: none;
+  }
+
+  .brand-logo {
+    width: 124px;
+  }
+
+  .rail-nav {
+    gap: 2px;
+  }
+
+  .rail-nav a {
+    width: 52px;
+    min-height: 52px;
+    padding: 5px 2px;
+  }
+
+  .rail-nav svg {
+    width: 18px;
+    height: 18px;
+  }
+
+  .rail-nav-label {
+    font-size: 9px;
+  }
+
+  .main-content {
+    padding-top: calc(64px + env(safe-area-inset-top));
+  }
+
+  #lmsMain,
+  .app-loading,
+  .catalog-layout,
+  .error-state {
+    min-height: calc(100vh - 64px);
+    min-height: calc(100dvh - 64px - env(safe-area-inset-top));
+  }
+}
+
+@media (max-width: 390px) {
+  .history-rail {
+    padding-right: 9px;
+    padding-left: 9px;
+  }
+
+  .brand-logo {
+    width: 116px;
+  }
+
+  .player-header {
+    padding-right: 10px;
+    padding-left: 10px;
+    grid-template-columns: 44px minmax(0, 1fr) auto;
+    gap: 7px;
+  }
+
+  .player-exit {
+    width: 44px;
+    padding: 0;
+    justify-content: center;
+  }
+
+  .player-ai-lab {
+    width: 44px;
+    padding: 0;
+  }
+
+  .player-ai-lab-label {
+    display: none;
+  }
+
+  .player-title-wrap h1 {
+    font-size: 13px;
+    line-height: 1.3;
+  }
+
+  .class-timer {
+    padding: 7px 8px;
+    font-size: 9px;
+    white-space: nowrap;
+  }
+
+  .class-duration {
+    display: none;
+  }
+
+  .slide-card {
+    padding: 22px 17px;
+  }
+
+  .slide-card h2 {
+    font-size: 23px;
+  }
+
+  .slide-controls {
+    grid-template-columns: 64px minmax(0, 1fr) 64px;
+    gap: 6px;
+  }
+
+  .slide-controls button {
+    padding-right: 7px;
+    padding-left: 7px;
+  }
+
+  .dialog-header,
+  .dialog-body {
+    padding-right: 15px;
+    padding-left: 15px;
+  }
+
+  .dialog-header h2 {
+    font-size: 21px;
+  }
+
+  .dialog-footer {
+    padding-right: 15px;
+    padding-left: 15px;
+  }
+}
+
+@media (max-width: 720px) {
+  .learning-studio.preview-mode .tutor-composer {
+    display: none;
+  }
+
+  .learning-studio.preview-mode .studio-body {
+    padding-bottom: max(18px, env(safe-area-inset-bottom));
+  }
+
+  .preview-showcase {
+    gap: 12px;
+  }
+
+  .preview-result-stage {
+    padding: 9px;
+    perspective: 820px;
+  }
+
+  .preview-result-stage > .seed-web-app {
+    transform: rotateX(1deg) rotateY(-1.5deg);
+  }
+
+  .preview-result-stage > .seed-hardware {
+    transform: rotateX(1.3deg) rotateY(1.4deg);
+  }
+
+  .preview-result-stage > .seed-ops {
+    transform: rotateX(1deg) rotateY(-1.2deg);
+  }
+
+  .seed-app-hero { transform: translateZ(34px) rotateZ(-0.4deg); }
+  .seed-device-flow { transform: translateZ(28px); }
+  .seed-device-stage { transform: translateZ(22px) rotateX(2.4deg); }
+  .seed-ops-head { transform: translateZ(36px); }
+  .seed-rover-panel { transform: translateZ(24px) rotateY(1.6deg); }
+  .seed-telemetry { transform: translateZ(30px) rotateY(-1.8deg); }
+
+  .seed-web-app.is-running .seed-app-hero {
+    animation-name: seed-web-depth-mobile;
+    transform: translateZ(40px) rotateZ(0.35deg) rotateY(-0.8deg);
+  }
+
+  .seed-hardware.is-running .seed-device-stage {
+    transform: translateZ(30px) rotateX(1deg) rotateY(-0.6deg);
+  }
+
+  .seed-hardware.is-running .seed-modi-core {
+    animation-name: seed-module-lift-mobile;
+    transform: rotateX(-4deg) rotateY(-8deg) translateZ(22px);
+  }
+
+  .seed-ops.is-running .seed-rover {
+    animation-name: seed-rover-drive-mobile;
+    transform: rotateX(-3deg) rotateY(6deg) translateZ(28px) scale(1.02);
+  }
+
+  .seed-ops.is-running .seed-telemetry {
+    animation-name: seed-panel-arrive-mobile;
+    transform: translateZ(28px) rotateY(-1.6deg);
+  }
+
+  .preview-heading h3 {
+    font-size: 18px;
+  }
+
+  .preview-heading > p {
+    font-size: 11px;
+  }
+
+  .preview-window-generated iframe {
+    height: min(320px, 42dvh);
+  }
+
+  .preview-proof li p {
+    font-size: 11px;
+  }
+
+  .preview-note p {
+    font-size: 10px;
+  }
+}
+
+@media (max-height: 480px) and (orientation: landscape) {
+  .preview-window-generated iframe {
+    height: 180px;
+  }
+
+  .preview-heading > p,
+  .preview-proof,
+  .preview-note {
+    display: none;
+  }
+}

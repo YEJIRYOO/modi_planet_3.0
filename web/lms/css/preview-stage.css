@@ -1,0 +1,378 @@
+/* MODI Planet LMS — 2.5D 미리보기 무대: 카메라 한 대와 깊이 평면
+   lms.css 의 @import 순서에 기대는 파일이다. 순서를 바꾸면 캐스케이드가 달라진다. */
+
+/* 2.5D preview stage: one camera, layered product planes, and physical depth cues. */
+.preview-result-stage {
+  position: relative;
+  padding: 15px;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at var(--depth-shine-x, 76%) var(--depth-shine-y, 12%), color-mix(in srgb, var(--preview-accent-2) 20%, transparent), transparent 34%),
+    linear-gradient(145deg, #f8f7fa, #ebeaf0);
+  perspective: 1050px;
+  perspective-origin: 50% 36%;
+}
+
+.preview-result-stage::before {
+  position: absolute;
+  z-index: 2;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(circle at var(--depth-shine-x, 75%) var(--depth-shine-y, 15%), rgba(255, 255, 255, 0.3), transparent 24%);
+  content: "";
+  mix-blend-mode: screen;
+  opacity: 0.3;
+  transition: background-position 120ms linear;
+}
+
+.preview-result-stage:focus-within::before {
+  opacity: 0;
+}
+
+.preview-result-stage::after {
+  position: absolute;
+  z-index: 0;
+  width: 68%;
+  height: 18px;
+  right: 16%;
+  bottom: 4px;
+  background: rgba(29, 25, 38, 0.22);
+  border-radius: 50%;
+  content: "";
+  filter: blur(11px);
+  transform: rotateX(72deg);
+}
+
+.preview-result-stage > .seed-web-app,
+.preview-result-stage > .seed-hardware,
+.preview-result-stage > .seed-ops {
+  z-index: 1;
+  overflow: visible;
+  border-radius: 17px;
+  transform-style: preserve-3d;
+  transition: transform 180ms ease-out, box-shadow 180ms ease-out;
+}
+
+.seed-web-app,
+.seed-hardware,
+.seed-ops {
+  perspective: 900px;
+  perspective-origin: 50% 38%;
+}
+
+.seed-scene-camera {
+  position: relative;
+  z-index: 1;
+  transform-style: preserve-3d;
+}
+
+.seed-scene-camera-web,
+.seed-scene-camera-hardware {
+  display: grid;
+  gap: 12px;
+}
+
+.preview-result-stage > .seed-web-app {
+  box-shadow: 0 34px 46px -25px color-mix(in srgb, var(--preview-accent) 52%, rgba(30, 25, 38, 0.62));
+  transform: rotateX(var(--depth-rotate-x, 1.6deg)) rotateY(var(--depth-rotate-y, -2.8deg));
+}
+
+.preview-result-stage > .seed-hardware {
+  box-shadow: 0 35px 48px -25px color-mix(in srgb, var(--preview-accent-2) 40%, rgba(23, 44, 33, 0.58));
+  transform: rotateX(var(--depth-rotate-x, 2.1deg)) rotateY(var(--depth-rotate-y, 2.2deg));
+}
+
+.preview-result-stage > .seed-ops {
+  box-shadow: 0 38px 52px -23px color-mix(in srgb, var(--preview-accent) 48%, rgba(9, 10, 14, 0.84));
+  transform: rotateX(var(--depth-rotate-x, 1.8deg)) rotateY(var(--depth-rotate-y, -2deg));
+}
+
+.seed-web-app::before,
+.seed-hardware::before,
+.seed-ops::before {
+  border-radius: inherit;
+}
+
+.seed-app-nav,
+.seed-app-hero,
+.seed-web-app .seed-scene-camera > .seed-metric-grid,
+.seed-web-app .seed-scene-camera > .seed-run-button,
+.seed-device-flow,
+.seed-device-stage,
+.seed-hardware .seed-scene-camera > .seed-metric-grid,
+.seed-signal-track,
+.seed-hardware .seed-scene-camera > .seed-run-button,
+.seed-ops-head,
+.seed-ops-grid,
+.seed-event-log {
+  transform-style: preserve-3d;
+  transition: transform 220ms cubic-bezier(.2, .78, .2, 1), box-shadow 220ms ease;
+}
+
+.seed-app-nav {
+  transform: translateZ(44px);
+}
+
+.seed-web-spark i:nth-child(2),
+.seed-web-spark i:nth-child(3) {
+  transform: translateZ(58px);
+}
+
+.seed-app-hero {
+  transform: translateZ(52px) rotateZ(-0.55deg);
+}
+
+.seed-web-app.is-running .seed-app-hero {
+  transform: translateZ(70px) rotateZ(0.65deg) rotateY(-1.5deg);
+}
+
+.seed-web-app .seed-scene-camera > .seed-metric-grid {
+  transform: translateZ(34px);
+}
+
+.seed-web-app .seed-scene-camera > .seed-metric-grid > div {
+  transform-style: preserve-3d;
+  box-shadow: 0 12px 20px rgba(43, 41, 41, 0.11);
+  transition: transform 180ms ease, box-shadow 180ms ease;
+}
+
+.seed-web-app .seed-scene-camera > .seed-metric-grid > div:nth-child(1) {
+  transform: translateZ(22px) rotateZ(-1.8deg) rotateY(2deg);
+}
+
+.seed-web-app .seed-scene-camera > .seed-metric-grid > div:nth-child(2) {
+  transform: translateY(-3px) translateZ(40px) rotateX(-1deg);
+}
+
+.seed-web-app .seed-scene-camera > .seed-metric-grid > div:nth-child(3) {
+  transform: translateZ(28px) rotateZ(1.8deg) rotateY(-2deg);
+}
+
+.seed-web-app .seed-scene-camera > .seed-run-button {
+  border-bottom: 4px solid rgba(0, 0, 0, 0.32);
+  box-shadow: 0 15px 25px rgba(43, 41, 41, 0.24);
+  transform: translateZ(38px);
+}
+
+.seed-device-flow {
+  transform: translateZ(42px) rotateX(-1.2deg);
+}
+
+.seed-device-flow > div:nth-of-type(1) { transform: translateZ(8px) rotateY(2deg); }
+.seed-device-flow > div:nth-of-type(2) { transform: translateZ(22px); }
+.seed-device-flow > div:nth-of-type(3) { transform: translateZ(10px) rotateY(-2deg); }
+
+.seed-device-stage {
+  transform: translateZ(30px) rotateX(3.4deg);
+  transform-origin: 50% 100%;
+}
+
+.seed-hardware.is-running .seed-device-stage {
+  transform: translateZ(48px) rotateX(1.3deg) rotateY(-1.2deg);
+}
+
+.seed-device-visual,
+.seed-modi-core {
+  transform-style: preserve-3d;
+}
+
+.seed-device-visual {
+  transform: translateZ(28px) rotateY(-5deg);
+}
+
+.seed-modi-core {
+  transform: rotateX(-8deg) rotateY(16deg) translateZ(18px);
+  transition: transform 240ms cubic-bezier(.2, .8, .2, 1), box-shadow 240ms ease;
+}
+
+.seed-modi-core::before,
+.seed-modi-core::after {
+  position: absolute;
+  background: #585260;
+  content: "";
+  pointer-events: none;
+}
+
+.seed-modi-core::before {
+  width: calc(100% - 4px);
+  height: 10px;
+  top: -9px;
+  left: 8px;
+  clip-path: polygon(0 100%, 88% 100%, 100% 0, 12% 0);
+  transform: translateZ(-1px);
+}
+
+.seed-modi-core::after {
+  width: 10px;
+  height: calc(100% - 4px);
+  top: -4px;
+  right: -9px;
+  background: #17151a;
+  clip-path: polygon(0 8%, 100% 0, 100% 88%, 0 100%);
+}
+
+.seed-hardware.is-running .seed-modi-core {
+  box-shadow: 0 16px 24px rgba(43, 41, 41, 0.25), 0 0 0 5px color-mix(in srgb, var(--preview-accent) 14%, transparent);
+  transform: rotateX(-5deg) rotateY(-12deg) translateZ(34px) scale(1.03);
+}
+
+.seed-sensor-wave {
+  transform: rotateX(67deg) translateZ(-18px) scale(1.25);
+}
+
+.seed-device-output {
+  transform: rotateX(67deg) translateZ(-28px) scale(1.38);
+}
+
+.seed-device-readout {
+  transform: translateZ(34px);
+}
+
+.seed-hardware .seed-scene-camera > .seed-metric-grid {
+  transform: translateZ(30px) rotateX(-0.7deg);
+}
+
+.seed-hardware .seed-scene-camera > .seed-metric-grid > div:nth-child(1) { transform: translateZ(8px) rotateY(1.8deg); }
+.seed-hardware .seed-scene-camera > .seed-metric-grid > div:nth-child(2) { transform: translateY(-3px) translateZ(26px); }
+.seed-hardware .seed-scene-camera > .seed-metric-grid > div:nth-child(3) { transform: translateZ(10px) rotateY(-1.8deg); }
+
+.seed-signal-track {
+  transform: translateZ(22px) rotateX(-1deg);
+}
+
+.seed-hardware .seed-scene-camera > .seed-run-button {
+  border-bottom: 4px solid color-mix(in srgb, var(--preview-accent) 58%, #2b252f);
+  transform: translateZ(36px);
+}
+
+.seed-ops-head {
+  transform: translateZ(54px);
+}
+
+.seed-ops-grid {
+  transform: translateZ(24px);
+}
+
+.seed-rover-panel {
+  transform: translateZ(34px) rotateY(2.6deg);
+  transform-origin: 100% 50%;
+}
+
+.seed-telemetry {
+  transform: translateZ(48px) rotateY(-2.8deg);
+  transform-origin: 0 50%;
+}
+
+.seed-rover-scene {
+  min-height: 112px;
+  overflow: visible;
+  perspective: 460px;
+  transform-style: preserve-3d;
+}
+
+.seed-road-line {
+  height: auto;
+  top: 18px;
+  right: -18%;
+  bottom: -34px;
+  left: -18%;
+  background:
+    repeating-linear-gradient(90deg, transparent 0 23px, rgba(255, 255, 255, 0.08) 23px 24px),
+    repeating-linear-gradient(0deg, transparent 0 18px, rgba(255, 255, 255, 0.05) 18px 19px),
+    linear-gradient(#292c34, #090a0c);
+  clip-path: polygon(43% 0, 57% 0, 96% 100%, 4% 100%);
+  transform: rotateX(54deg) translateZ(-18px);
+  transform-origin: center bottom;
+}
+
+.seed-rover {
+  transform: rotateX(-6deg) rotateY(-13deg) translateZ(34px);
+  transform-style: preserve-3d;
+}
+
+.seed-rover::before {
+  position: absolute;
+  width: 39px;
+  height: 12px;
+  top: -8px;
+  left: 9px;
+  background: color-mix(in srgb, var(--preview-accent-2) 66%, #fff);
+  border-radius: 7px 8px 2px 2px;
+  box-shadow: inset 0 1px rgba(255, 255, 255, 0.7);
+  clip-path: polygon(12% 100%, 0 32%, 18% 0, 82% 0, 100% 32%, 90% 100%);
+  content: "";
+  transform: translateZ(8px);
+}
+
+.seed-rover::after {
+  position: absolute;
+  width: 48px;
+  height: 10px;
+  left: 2px;
+  bottom: -17px;
+  background: rgba(0, 0, 0, 0.55);
+  border-radius: 50%;
+  content: "";
+  filter: blur(5px);
+  transform: rotateX(72deg) translateZ(-24px);
+}
+
+.seed-ops.is-running .seed-rover {
+  animation: seed-rover-drive 760ms cubic-bezier(.2, .78, .2, 1) both;
+  transform: rotateX(-4deg) rotateY(10deg) translateZ(48px) scale(1.04);
+}
+
+.seed-web-app.is-running .seed-app-hero {
+  animation: seed-web-depth 680ms cubic-bezier(.2, .8, .2, 1) both;
+}
+
+.seed-hardware.is-running .seed-modi-core {
+  animation: seed-module-lift 720ms cubic-bezier(.18, .78, .18, 1) both;
+}
+
+.seed-ops.is-running .seed-telemetry {
+  animation: seed-panel-arrive 580ms 90ms cubic-bezier(.2, .8, .2, 1) both;
+}
+
+.seed-obstacle {
+  transform: rotateY(-18deg) translateZ(16px);
+}
+
+.seed-event-log {
+  transform: translateZ(38px) rotateX(-1.3deg);
+}
+
+.preview-proof,
+.preview-artifacts,
+.preview-note,
+.preview-start-button {
+  transition: transform 180ms ease, box-shadow 180ms ease;
+}
+
+.preview-proof {
+  box-shadow: 10px 14px 28px rgba(43, 41, 41, 0.08);
+  transform: perspective(900px) rotateY(-1.2deg) translateZ(0);
+}
+
+.preview-artifacts {
+  transform: perspective(900px) rotateY(1.5deg) translateZ(0);
+}
+
+.preview-note {
+  box-shadow: -6px 9px 20px color-mix(in srgb, var(--preview-accent-2) 10%, transparent);
+  transform: perspective(900px) rotateX(1deg);
+}
+
+.preview-start-button {
+  position: relative;
+  border-bottom: 5px solid color-mix(in srgb, var(--preview-accent) 58%, #3a2635);
+  transform: perspective(800px) rotateX(-2deg) translateY(-1px);
+  transform-origin: center bottom;
+}
+
+.preview-start-button:active,
+.seed-run-button:active,
+.seed-ops-head button:active {
+  border-bottom-width: 1px;
+  transform: translateY(3px);
+}

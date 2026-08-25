@@ -1,0 +1,227 @@
+/* MODI Planet LMS — 고정 미리보기 크롬: 보드는 2D, 물체만 깊이
+   lms.css 의 @import 순서에 기대는 파일이다. 순서를 바꾸면 캐스케이드가 달라진다. */
+
+/* Fixed preview chrome: the board stays 2D while only the world and physical objects carry depth. */
+.preview-result-stage {
+  background: linear-gradient(145deg, #f8f7fa, #ebeaf0);
+}
+
+.preview-result-stage::before {
+  display: none;
+}
+
+.preview-result-stage > .seed-web-app,
+.preview-result-stage > .seed-hardware,
+.preview-result-stage > .seed-ops {
+  transform: none !important;
+  transform-style: flat;
+  transition: box-shadow 180ms ease-out;
+}
+
+.seed-web-app,
+.seed-hardware,
+.seed-ops {
+  perspective: none;
+}
+
+.seed-app-nav,
+.seed-app-hero,
+.seed-web-app .seed-scene-camera > .seed-metric-grid,
+.seed-web-app .seed-scene-camera > .seed-run-button,
+.seed-device-flow,
+.seed-device-flow > div,
+.seed-device-stage,
+.seed-device-readout,
+.seed-hardware .seed-scene-camera > .seed-metric-grid,
+.seed-hardware .seed-scene-camera > .seed-metric-grid > div,
+.seed-signal-track,
+.seed-hardware .seed-scene-camera > .seed-run-button,
+.seed-ops-head,
+.seed-ops-grid,
+.seed-rover-panel,
+.seed-telemetry,
+.seed-event-log,
+.preview-proof,
+.preview-artifacts,
+.preview-note,
+.preview-start-button {
+  animation: none !important;
+  transform: none !important;
+  transform-style: flat;
+}
+
+.seed-device-stage,
+.seed-rover-scene {
+  perspective: 520px;
+  transform-style: preserve-3d;
+}
+
+.seed-world-portal {
+  background: #07101d;
+  perspective: 760px;
+  transform: none !important;
+  transform-style: preserve-3d;
+}
+
+.seed-web-app.is-running .seed-world-portal,
+.seed-hardware.is-running .seed-world-portal,
+.seed-ops.is-running .seed-world-portal {
+  animation: none;
+}
+
+.seed-world-depth {
+  position: absolute;
+  z-index: -1;
+  inset: -14px;
+  overflow: hidden;
+  pointer-events: none;
+  background-image: var(--world-image);
+  background-position: 68% center;
+  background-size: cover;
+  filter: saturate(1.04) contrast(1.02);
+  transform: translate3d(var(--world-pan-x, 0px), var(--world-pan-y, 0px), -18px) scale(1.1);
+  transform-style: preserve-3d;
+  transition: transform 150ms cubic-bezier(.2, .7, .2, 1), filter 220ms ease;
+  will-change: transform;
+}
+
+.seed-world-depth::before {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at 76% 22%, rgba(255, 255, 255, 0.34) 0 1px, transparent 2px),
+    radial-gradient(circle at 61% 63%, color-mix(in srgb, var(--world-primary) 38%, transparent) 0 2px, transparent 3px),
+    radial-gradient(circle at 88% 72%, color-mix(in srgb, var(--world-secondary) 38%, transparent) 0 1px, transparent 3px);
+  content: "";
+  transform: translate3d(var(--world-near-x, 0px), var(--world-near-y, 0px), 46px);
+  transition: transform 130ms cubic-bezier(.2, .7, .2, 1);
+}
+
+.seed-world-depth i {
+  position: absolute;
+  display: block;
+  pointer-events: none;
+  transition: transform 130ms cubic-bezier(.2, .7, .2, 1);
+}
+
+.seed-world-depth i:nth-child(1) {
+  width: 114px;
+  height: 34px;
+  right: 10%;
+  bottom: 17%;
+  border: 1px solid color-mix(in srgb, var(--world-primary) 58%, transparent);
+  border-radius: 50%;
+  box-shadow: 0 0 28px color-mix(in srgb, var(--world-primary) 24%, transparent);
+  transform: translate3d(var(--world-near-x, 0px), var(--world-near-y, 0px), 58px) rotate(-14deg);
+}
+
+.seed-world-depth i:nth-child(2) {
+  width: 9px;
+  height: 9px;
+  right: 29%;
+  top: 23%;
+  background: #fff;
+  border-radius: 50%;
+  box-shadow: 0 0 18px 4px var(--world-primary);
+  transform: translate3d(var(--world-near-x, 0px), var(--world-near-y, 0px), 74px);
+}
+
+.seed-world-depth i:nth-child(3) {
+  width: 52px;
+  height: 2px;
+  right: 17%;
+  top: 45%;
+  background: linear-gradient(90deg, transparent, var(--world-secondary));
+  border-radius: 999px;
+  box-shadow: 0 0 10px var(--world-secondary);
+  transform: translate3d(var(--world-near-x, 0px), var(--world-near-y, 0px), 66px) rotate(-8deg);
+}
+
+.seed-world-orbit {
+  transform: translate3d(var(--world-near-x, 0px), var(--world-near-y, 0px), 48px) rotate(-18deg);
+  transition: transform 130ms cubic-bezier(.2, .7, .2, 1);
+}
+
+.seed-world-beacon {
+  transform: translate3d(var(--world-near-x, 0px), var(--world-near-y, 0px), 36px);
+  transition: transform 130ms cubic-bezier(.2, .7, .2, 1);
+}
+
+.seed-device-visual {
+  transform: translate3d(var(--world-near-x, 0px), var(--world-near-y, 0px), 28px) rotateX(var(--object-rotate-x, -4deg)) rotateY(var(--object-rotate-y, -5deg));
+  transition: transform 150ms cubic-bezier(.2, .7, .2, 1);
+  will-change: transform;
+}
+
+.seed-web-app.is-running .seed-world-depth,
+.seed-hardware.is-running .seed-world-depth,
+.seed-ops.is-running .seed-world-depth {
+  animation: seed-world-content-awaken 760ms cubic-bezier(.2, .8, .2, 1) both;
+}
+
+@keyframes seed-world-content-awaken {
+  0% {
+    filter: brightness(0.72) saturate(0.82);
+    transform: translate3d(var(--world-pan-x, 0px), var(--world-pan-y, 0px), -24px) scale(1.16);
+  }
+  100% {
+    filter: brightness(1.06) saturate(1.12);
+    transform: translate3d(var(--world-pan-x, 0px), var(--world-pan-y, 0px), -18px) scale(1.1);
+  }
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .preview-proof:hover,
+  .preview-artifacts:hover,
+  .seed-web-app .seed-scene-camera > .seed-metric-grid > div:hover,
+  .seed-hardware .seed-scene-camera > .seed-metric-grid > div:hover {
+    transform: none !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+  }
+
+  .preview-result-stage > .seed-web-app,
+  .preview-result-stage > .seed-hardware,
+  .preview-result-stage > .seed-ops,
+  .seed-scene-camera,
+  .seed-world-portal,
+  .seed-world-depth,
+  .seed-world-depth::before,
+  .seed-world-depth i,
+  .seed-world-orbit,
+  .seed-app-nav,
+  .seed-app-hero,
+  .seed-web-app .seed-scene-camera > .seed-metric-grid,
+  .seed-web-app .seed-scene-camera > .seed-metric-grid > div,
+  .seed-web-app .seed-scene-camera > .seed-run-button,
+  .seed-device-flow,
+  .seed-device-flow > div,
+  .seed-device-stage,
+  .seed-device-visual,
+  .seed-modi-core,
+  .seed-hardware .seed-scene-camera > .seed-metric-grid,
+  .seed-hardware .seed-scene-camera > .seed-metric-grid > div,
+  .seed-signal-track,
+  .seed-hardware .seed-scene-camera > .seed-run-button,
+  .seed-ops-head,
+  .seed-ops-grid,
+  .seed-rover-panel,
+  .seed-telemetry,
+  .seed-rover,
+  .seed-obstacle,
+  .seed-event-log,
+  .preview-proof,
+  .preview-artifacts,
+  .preview-note,
+  .preview-start-button {
+    transform: none !important;
+  }
+}

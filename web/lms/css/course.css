@@ -1,0 +1,431 @@
+/* MODI Planet LMS — 과정 화면: 사이드 요약, 모드 탭, 차시 카드
+   lms.css 의 @import 순서에 기대는 파일이다. 순서를 바꾸면 캐스케이드가 달라진다. */
+
+.catalog-layout {
+  width: min(1200px, calc(100% - 48px));
+  min-height: 100vh;
+  margin: 0 auto;
+}
+
+.course-aside {
+  display: none;
+}
+
+.aside-label {
+  margin: 0 0 12px;
+  color: var(--ink-faint);
+  font-size: 12px;
+  font-weight: 750;
+}
+
+.level-switcher {
+  display: grid;
+  gap: 7px;
+}
+
+.level-switcher button {
+  display: flex;
+  width: 100%;
+  min-height: 52px;
+  padding: 10px 12px;
+  align-items: center;
+  gap: 11px;
+  color: var(--ink-sub);
+  background: transparent;
+  border: 0;
+  border-radius: 13px;
+  text-align: left;
+}
+
+.level-switcher button:hover {
+  background: #fff;
+}
+
+.level-switcher button.active {
+  color: var(--ink);
+  background: #fff;
+  box-shadow: var(--shadow-soft);
+}
+
+.level-switcher strong {
+  display: block;
+  font-size: 14px;
+}
+
+.level-switcher span {
+  display: block;
+  color: var(--ink-faint);
+  font-size: 11px;
+}
+
+.level-dot {
+  width: 10px;
+  height: 10px;
+  flex: 0 0 auto;
+  background: var(--brand);
+  border-radius: 50%;
+}
+
+.level-switcher button:nth-child(2) .level-dot { background: var(--green); }
+.level-switcher button:nth-child(3) .level-dot { background: var(--blue); }
+
+.aside-summary {
+  margin-top: 34px;
+  padding-top: 24px;
+  border-top: 1px solid var(--line-strong);
+}
+
+.aside-summary dl {
+  display: grid;
+  margin: 0;
+  gap: 14px;
+}
+
+.aside-summary div {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.aside-summary dt {
+  color: var(--ink-faint);
+  font-size: 12px;
+}
+
+.aside-summary dd {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 730;
+  text-align: right;
+}
+
+.course-main {
+  min-width: 0;
+  padding: 52px 0 100px;
+}
+
+.compact-level-nav {
+  display: none;
+  margin-bottom: 24px;
+  padding: 8px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 6px;
+  background: var(--surface-soft);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+}
+
+.compact-level-nav a {
+  display: flex;
+  min-height: 44px;
+  padding: 8px 12px;
+  align-items: center;
+  justify-content: center;
+  color: var(--ink-sub);
+  border-radius: 11px;
+  font-size: 13px;
+  font-weight: 720;
+  text-align: center;
+  text-decoration: none;
+}
+
+.compact-level-nav a:hover,
+.compact-level-nav a.active {
+  color: var(--brand-dark);
+  background: #fff;
+  box-shadow: var(--shadow-soft);
+}
+
+.breadcrumb {
+  display: flex;
+  margin-bottom: 28px;
+  align-items: center;
+  gap: 7px;
+  color: var(--ink-faint);
+  font-size: 13px;
+}
+
+.breadcrumb button {
+  padding: 0;
+  color: inherit;
+  background: none;
+  border: 0;
+}
+
+.breadcrumb button:hover {
+  color: var(--ink);
+  text-decoration: underline;
+}
+
+.course-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 28px;
+}
+
+.course-header h1 {
+  margin: 0;
+  font-size: clamp(34px, 4.5vw, 52px);
+  letter-spacing: -0.04em;
+  line-height: 1.12;
+}
+
+.course-header h1 span {
+  color: var(--brand);
+}
+
+.course-overview {
+  max-width: 760px;
+  margin: 20px 0 0;
+  color: var(--ink-sub);
+  font-size: 16px;
+  line-height: 1.75;
+}
+
+.course-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  margin-top: 21px;
+}
+
+.course-badges span,
+.standard-chip,
+.mode-chip {
+  display: inline-flex;
+  padding: 7px 10px;
+  align-items: center;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.course-badges span {
+  color: var(--ink-sub);
+  background: var(--surface-soft);
+  border: 1px solid var(--line);
+}
+
+.curriculum-note {
+  display: flex;
+  margin-top: 30px;
+  padding: 17px 19px;
+  gap: 13px;
+  color: var(--ink-sub);
+  background: #fffaf3;
+  border: 1px solid #f2dfbf;
+  border-radius: 15px;
+  font-size: 13px;
+  line-height: 1.65;
+}
+
+.curriculum-note strong {
+  color: var(--orange);
+  white-space: nowrap;
+}
+
+.curriculum-note a {
+  margin-left: 4px;
+  color: var(--blue);
+  font-weight: 750;
+  text-underline-offset: 3px;
+}
+
+.mode-tabs {
+  display: flex;
+  margin: 42px 0 28px;
+  padding: 5px;
+  gap: 5px;
+  overflow-x: auto;
+  background: var(--surface-soft);
+  border: 1px solid var(--line);
+  border-radius: 15px;
+}
+
+.mode-tabs button {
+  min-height: 42px;
+  padding: 9px 16px;
+  flex: 1 0 auto;
+  color: var(--ink-muted);
+  background: transparent;
+  border: 0;
+  border-radius: 11px;
+  font-size: 13px;
+  font-weight: 720;
+}
+
+.mode-tabs button:hover {
+  color: var(--ink);
+}
+
+.mode-tabs button.active {
+  color: #fff;
+  background: var(--ink);
+  box-shadow: 0 6px 16px rgba(43, 41, 41, 0.14);
+}
+
+.lesson-groups {
+  display: grid;
+  gap: 44px;
+}
+
+.lesson-group-header {
+  display: flex;
+  margin-bottom: 14px;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 24px;
+}
+
+.lesson-group-header h2 {
+  margin: 0;
+  font-size: 23px;
+  letter-spacing: -0.025em;
+}
+
+.lesson-group-header p {
+  max-width: 560px;
+  margin: 0;
+  color: var(--ink-faint);
+  font-size: 13px;
+  text-align: right;
+}
+
+.lesson-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.lesson-card {
+  position: relative;
+  display: flex;
+  min-width: 0;
+  min-height: 315px;
+  padding: 20px;
+  flex-direction: column;
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  box-shadow: 0 1px 0 rgba(43, 41, 41, 0.02);
+  transition: transform 160ms ease, border-color 160ms ease, box-shadow 160ms ease;
+}
+
+.lesson-card:hover {
+  border-color: var(--brand-2);
+  box-shadow: var(--shadow-soft);
+  transform: translateY(-3px);
+}
+
+.lesson-topline {
+  display: flex;
+  margin-bottom: 18px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.lesson-number {
+  display: inline-grid;
+  width: 40px;
+  height: 40px;
+  color: #fff;
+  background: var(--ink);
+  border-radius: 12px;
+  place-items: center;
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.mode-chip.web { color: var(--purple); background: var(--purple-soft); }
+.mode-chip.hw { color: var(--green); background: var(--green-soft); }
+.mode-chip.webhw { color: var(--orange); background: var(--orange-soft); }
+
+.lesson-card h3 {
+  margin: 0;
+  font-size: 18px;
+  letter-spacing: -0.02em;
+  line-height: 1.4;
+}
+
+.lesson-card > p {
+  display: -webkit-box;
+  margin: 10px 0 16px;
+  overflow: hidden;
+  color: var(--ink-muted);
+  font-size: 13px;
+  line-height: 1.65;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+}
+
+.standard-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+
+.standard-chip {
+  padding: 5px 8px;
+  color: var(--blue);
+  background: var(--blue-soft);
+}
+
+.deck-chip {
+  padding: 5px 8px;
+  color: var(--brand-dark);
+  background: var(--brand-4);
+}
+
+.lesson-actions {
+  display: grid;
+  grid-template-columns: 1fr 1.15fr;
+  gap: 7px;
+  margin-top: auto;
+  padding-top: 17px;
+}
+
+.primary-button,
+.secondary-button,
+.lesson-actions button {
+  min-height: 43px;
+  padding: 9px 14px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 740;
+}
+
+.primary-button,
+.lesson-actions .start-lesson {
+  color: #fff;
+  background: var(--ink);
+  border: 1px solid var(--ink);
+}
+
+.primary-button:hover,
+.lesson-actions .start-lesson:hover {
+  background: #000;
+}
+
+.secondary-button,
+.lesson-actions .open-plan {
+  color: var(--ink-sub);
+  background: #fff;
+  border: 1px solid var(--line-strong);
+}
+
+.secondary-button:hover,
+.lesson-actions .open-plan:hover {
+  color: var(--ink);
+  border-color: var(--ink-faint);
+}
+
+.empty-filter {
+  padding: 50px 24px;
+  color: var(--ink-muted);
+  background: var(--surface-soft);
+  border-radius: 18px;
+  text-align: center;
+}
