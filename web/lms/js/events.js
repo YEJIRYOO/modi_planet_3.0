@@ -1,19 +1,25 @@
 // MODI Planet LMS — 전역 이벤트 위임과 요소 배선.
 
 import { renderCourse } from "./catalog.js";
-import { openBadgeCollection, openFeedbackArchive, openJoinClass, openReviewPanel, openStudentMonitor, openSubmissionComplete, openSubmitPanel, openWorkDetail, renderClassDetail, renderClassroom, renderStudentClassDetail, updateRosterView } from "./classroom.js?v=20260826-student-class-entry";
+import { openBadgeCollection, openCreateClass, openJoinClass, openStudentMonitor, openSubmissionComplete, openSubmitPanel, openWorkDetail, renderClassDetail, renderClassroom, renderStudentClassDetail, updateRosterView } from "./classroom.js";
 import { CLASSROOM_KEY, CLASSROOM_MOCK } from "./config.js";
 import { asList, learningStudio, lessonPlayer, main, mobileTeacherToggle, planDialog, showToast, studioBackdrop, studioToggle } from "./dom.js";
 import { closePlan, openPlan } from "./plan.js";
-import { exitLesson, setTeacherNoteOpen, startLesson } from "./player.js";
+import { exitLesson, openAssignedLesson, setTeacherNoteOpen, startLesson } from "./player.js";
 import { getPreviewExample, handlePreviewPointerMove, handlePreviewPointerOut } from "./preview.js";
-import { boot, route } from "./routes.js?v=20260826-student-class-entry";
+import { boot, route } from "./routes.js";
 import { chooseQuiz, focusCurrentSlide, moveSlide, renderSlide } from "./slides.js";
 import { findLesson, state } from "./state.js";
 import { closeStudio, openStudio, renderStudio, setStudioTab, syncStudioAccessibility, usesMobileStudio } from "./studio.js";
 import { sendTutorMessage, usePrompt } from "./tutor.js";
 
 document.addEventListener("click", (event) => {
+  const assignedLesson = event.target.closest("[data-assigned-lesson]");
+  if (assignedLesson) {
+    openAssignedLesson(findLesson(assignedLesson.dataset.assignedLesson));
+    return;
+  }
+
   const studentClass = event.target.closest("[data-student-class]");
   if (studentClass) {
     renderStudentClassDetail(studentClass.dataset.studentClass);
@@ -40,8 +46,7 @@ document.addEventListener("click", (event) => {
       "refresh": "학생 활동 이벤트를 새로 불러왔어요.", "refresh-student": "최근 저장 작업을 불러왔어요.",
       "start-class": "4차시 수업을 시작할 준비가 됐어요.", "announcement": "학급 공지 작성 화면을 열었어요.",
       "download-report": "학급 작품 리포트를 준비했어요.", "add-student": "학생 등록 링크와 초대코드를 열었어요.",
-      "save-curriculum": "별빛 메이커 5-2 수업 편성을 저장했어요.", "save-settings": "우리 반 AI 튜터 정책을 저장했어요.",
-      "reset-settings": "AI 튜터 정책을 기본값으로 되돌렸어요.", "save-note": "학생 관찰 메모를 저장했어요.",
+      "save-curriculum": "별빛 메이커 5-2 수업 편성을 저장했어요.", "save-note": "학생 관찰 메모를 저장했어요.",
       "send-hint": "학생 활동실에 생각 힌트를 보냈어요.", "call-student": "도움 필요 목록에 표시했어요."
     };
     if (action === "lesson-plan") window.location.hash = "#elementary";
@@ -59,27 +64,12 @@ document.addEventListener("click", (event) => {
   const officeAction = event.target.closest("[data-office-action]");
   if (officeAction) {
     const action = officeAction.dataset.officeAction;
-    if (action === "review") openReviewPanel(0);
-    else if (action === "back") renderClassroom();
+    if (action === "back") renderClassroom();
     else if (action === "curriculum") window.location.hash = "#elementary";
-    else if (action === "confirm") { showToast("교사 평가로 확정해 학생에게 전달했어요."); window.setTimeout(renderClassroom, 700); }
-    else if (action === "draft") showToast("평가 초안을 임시 저장했어요.");
-    else if (action === "new-class") showToast("새 학급 만들기: 초대 코드가 자동으로 생성됩니다.");
-    else if (action === "class" && officeAction.dataset.classId === "c1") renderClassDetail("overview");
+    else if (action === "new-class") openCreateClass();
+    else if (action === "class" && ["c1", "c-new"].includes(officeAction.dataset.classId)) renderClassDetail(officeAction.dataset.classId === "c-new" ? "curriculum" : "overview");
     else if (action === "class") showToast("창의융합 방과후 상세 mock은 다음 반으로 준비 중이에요.");
-    else if (action === "report") showToast("3차시 확정 리포트를 불러왔어요.");
-    return;
-  }
-
-  const reviewButton = event.target.closest("[data-review-index]");
-  if (reviewButton) {
-    openReviewPanel(Number(reviewButton.dataset.reviewIndex));
-    return;
-  }
-
-  const rubricScore = event.target.closest("[data-rubric-score]");
-  if (rubricScore) {
-    rubricScore.parentElement.querySelectorAll("button").forEach((button) => button.classList.toggle("selected", button === rubricScore));
+    else if (action === "report") showToast("3차시 수업 리포트를 불러왔어요.");
     return;
   }
 
@@ -92,7 +82,6 @@ document.addEventListener("click", (event) => {
     else if (action === "continue") window.location.hash = "#elementary";
     else if (action === "confirm-submit") openSubmissionComplete();
     else if (action === "work") openWorkDetail(studentAction.dataset.workId);
-    else if (action === "feedback" || action === "gallery") openFeedbackArchive();
     else if (action === "badges") openBadgeCollection();
     else if (action === "join") openJoinClass();
     else if (action === "ask-tutor") showToast("힌트: 신호가 바뀌는 동안 보행자는 무엇을 듣거나 볼 수 있을까요?");
@@ -241,6 +230,15 @@ document.addEventListener("input", (event) => {
 });
 
 document.addEventListener("submit", (event) => {
+  if (event.target.id === "createClassForm") {
+    event.preventDefault();
+    const formData = new FormData(event.target);
+    const className = String(formData.get("className") || "새 반").trim();
+    localStorage.setItem(CLASSROOM_KEY + "-created-class", className);
+    showToast(className + " 반을 만들었어요. 초대코드 MODI-53이 생성됐습니다.");
+    window.setTimeout(renderClassroom, 650);
+    return;
+  }
   if (event.target.id !== "joinClassForm") return;
   event.preventDefault();
   const formData = new FormData(event.target);
@@ -253,7 +251,10 @@ document.addEventListener("submit", (event) => {
   }
   CLASSROOM_MOCK.student.nickname = nickname || "하늘이";
   localStorage.setItem(CLASSROOM_KEY + "-joined", invite);
-  showToast("별빛 메이커 5-2 반에 참여했어요!");
+  const sessionId = localStorage.getItem(CLASSROOM_KEY + "-session-id") || "STU-" + crypto.randomUUID().slice(0, 8).toUpperCase();
+  localStorage.setItem(CLASSROOM_KEY + "-session-id", sessionId);
+  localStorage.setItem(CLASSROOM_KEY + "-student-name", nickname);
+  showToast("별빛 메이커 5-2 반에 참여했어요. 세션 ID: " + sessionId);
   window.setTimeout(renderClassroom, 650);
 });
 

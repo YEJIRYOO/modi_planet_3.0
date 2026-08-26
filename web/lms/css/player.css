@@ -177,6 +177,14 @@
   grid-template-columns: 230px minmax(420px, 1fr) minmax(300px, 0.78fr);
 }
 
+.lesson-player.assigned-lesson-player .player-layout {
+  grid-template-columns: minmax(520px, 1fr) minmax(300px, 0.72fr);
+}
+
+.lesson-player.assigned-lesson-player .slide-rail {
+  display: none;
+}
+
 .slide-rail {
   padding: 18px 13px;
   overflow-y: auto;

@@ -34,7 +34,7 @@ export const CLASSROOM_MOCK = {
     { no: 7, title: "별빛 행성 탐사차", date: "9.10 (목)", state: "준비 중", type: "Web + H/W" }
   ],
   submissions: [
-    { student: "김하늘", work: "MODI 교통 신호등", time: "오늘 10:24", status: "AI 초안 준비", color: "coral" },
+    { student: "김하늘", work: "MODI 교통 신호등", time: "오늘 10:24", status: "채점 대기", color: "coral" },
     { student: "이도윤", work: "보물 지킴이", time: "오늘 09:48", status: "교사 확인 필요", color: "violet" },
     { student: "박서아", work: "바람 3단 선풍기", time: "어제 16:12", status: "재제출", color: "blue" }
   ],

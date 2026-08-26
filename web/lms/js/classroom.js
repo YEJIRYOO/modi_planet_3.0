@@ -19,11 +19,14 @@ export function renderClassroom() {
 }
 
 export function renderTeacherOffice() {
-  const classes = CLASSROOM_MOCK.classes;
+  const createdClassName = localStorage.getItem(CLASSROOM_KEY + "-created-class");
+  const classes = createdClassName
+    ? [{ id: "c-new", name: createdClassName, grade: "초등 5학년", students: 0, active: 0, invite: "MODI-53", next: "수업 편성 필요", pending: 0 }, ...CLASSROOM_MOCK.classes]
+    : CLASSROOM_MOCK.classes;
   return [
     '<div class="classroom-page teacher-office">',
     '<header class="classroom-hero"><div><p class="classroom-kicker">TEACHER OFFICE</p><h1>안녕하세요, 김모디 선생님</h1><p>작품이 완성되는 순간을 놓치지 않도록 오늘의 수업과 평가를 모았어요.</p></div>', renderRoleSwitch("teacher"), '</header>',
-    '<section class="office-alert"><span class="pulse-dot"></span><div><b>오늘 확인할 작품 7개</b><p>AI 평가 초안은 제안일 뿐이에요. 선생님이 확인하고 확정하면 학생에게 전달됩니다.</p></div><button type="button" data-office-action="review">채점 대기열 보기 →</button></section>',
+    '<section class="office-alert"><span class="pulse-dot"></span><div><b>오늘 채점할 작품 7개</b><p>학생이 제출한 코드·모듈·작동 결과를 수치로 확인한 뒤 점수를 확정합니다.</p></div><button type="button" data-office-action="review">채점 대기열 보기 →</button></section>',
     '<div class="office-grid"><section class="office-main"><div class="section-heading"><div><span>MY CLASSES</span><h2>내 학급</h2></div><button class="soft-button" type="button" data-office-action="new-class">＋ 새 학급</button></div>',
     '<div class="class-cards">', classes.map((item, index) => '<article class="class-card class-card-tone-' + ((index % 3) + 1) + '"><div class="class-card-top"><span>' + escapeHtml(item.grade) + '</span><button type="button" aria-label="' + escapeHtml(item.name) + ' 더보기">•••</button></div><h3>' + escapeHtml(item.name) + '</h3><div class="class-signal"><b>' + item.active + '</b><span>명의 학생이<br>작품을 만들고 있어요</span></div><dl><div><dt>학생</dt><dd>' + item.students + '명</dd></div><div><dt>확인 대기</dt><dd class="accent">' + item.pending + '개</dd></div></dl><footer><span>' + escapeHtml(item.next) + '</span><button type="button" data-office-action="class" data-class-id="' + escapeHtml(item.id) + '">반 열기 →</button></footer></article>').join(''), '</div></section>',
     '<aside class="office-side"><section class="queue-card"><div class="section-heading"><div><span>REVIEW QUEUE</span><h2>채점·확정 대기</h2></div><b class="count-badge">7</b></div><div class="submission-list">', CLASSROOM_MOCK.submissions.map((item, index) => '<button type="button" data-review-index="' + index + '"><span class="work-thumb ' + item.color + '">⚙</span><span><b>' + escapeHtml(item.student) + '</b><small>' + escapeHtml(item.work) + '</small><em>' + escapeHtml(item.time) + '</em></span><i>' + escapeHtml(item.status) + '</i></button>').join(''), '</div><button class="full-soft-button" type="button" data-office-action="review">전체 대기열 보기</button></section>',
@@ -33,7 +36,7 @@ export function renderTeacherOffice() {
 
 export function renderClassTabs(active) {
   return '<nav class="class-detail-tabs" aria-label="학급 관리 메뉴">' + [
-    ["overview", "오늘의 반"], ["roster", "학생 명단"], ["curriculum", "My Curriculum · 수업 편성"], ["settings", "AI Tutor Control · 힌트 설정"]
+    ["overview", "오늘의 반"], ["roster", "학생 명단"], ["curriculum", "수업 편성"]
   ].map((tab) => '<button type="button" data-class-tab="' + tab[0] + '" class="' + (active === tab[0] ? 'active' : '') + '">' + tab[1] + '</button>').join('') + '</nav>';
 }
 
@@ -43,7 +46,6 @@ export function renderClassDetail(tab) {
   let body = "";
   if (activeTab === "roster") body = renderRosterPanel();
   else if (activeTab === "curriculum") body = renderClassCurriculum();
-  else if (activeTab === "settings") body = renderClassTutorSettings();
   else body = renderClassOverview();
   main.innerHTML = [
     '<div class="classroom-page class-detail-page"><button class="back-link" type="button" data-office-action="back">← 내 교무실</button>',
@@ -62,13 +64,13 @@ export function renderClassOverview() {
     help: roster.filter((student) => student.state === "help").length
   };
   return [
-    '<section class="class-session-banner"><div><span>다음 수업 · 8월 27일 목요일 10:40</span><h2>4차시 · 보행자 신호 회로</h2><p>버튼 → 네트워크 → LED 신호 흐름을 만들고 작동 증거를 남겨요.</p></div><div class="session-actions"><button type="button" data-class-action="lesson-plan">교안 보기</button><button class="primary" type="button" data-class-action="start-class">수업 시작</button></div></section>',
+    '<section class="class-session-banner"><div><span>편성한 강의안 · 8월 27일 목요일 10:40</span><h2>4차시 · 보행자 신호 회로</h2><p>버튼 → 네트워크 → LED 신호 흐름을 만들고 작동 증거를 남겨요.</p></div><div class="session-actions"><button type="button" data-assigned-lesson="elementary-0' + 4 + '">강의안 전체 화면</button><button class="primary" type="button" data-assigned-lesson="elementary-0' + 4 + '">수업 시작</button></div></section>',
     '<div class="class-overview-grid"><section class="live-board"><div class="section-heading"><div><span>ACTIVITY SNAPSHOT</span><h2>학생 작품 상태</h2></div><div class="snapshot-time"><i></i><span>방금 새로고침</span><button type="button" data-class-action="refresh">↻</button></div></div>',
     '<div class="making-stats"><article><span class="stat-icon coral">✓</span><div><b>', counts.submitted, '</b><small>제출 완료</small></div></article><article><span class="stat-icon blue">⚙</span><div><b>', counts.building, '</b><small>만드는 중</small></div></article><article><span class="stat-icon amber">!</span><div><b>', counts.help, '</b><small>도움 필요</small></div></article><article><span class="stat-icon gray">○</span><div><b>18</b><small>오늘 참여</small></div></article></div>',
     '<div class="cost-note"><span>저비용 모니터링</span><p>학생 화면을 계속 스트리밍하지 않고, 저장·연결·제출 이벤트만 모아 보여줘요.</p></div>',
     '<div class="student-snapshot-list">', roster.slice(0, 4).map(renderStudentSnapshot).join(''), '</div><button class="full-soft-button" type="button" data-class-tab="roster">24명 전체 보기</button></section>',
     '<aside class="class-today-side"><section class="attention-card"><span>TEACHER ATTENTION</span><h2>먼저 살펴볼 학생</h2><button type="button" data-student-monitor="s4"><div class="student-avatar amber">최</div><span><b>최민준</b><small>MODI 연결 5회 실패</small></span><i>도움 필요</i></button><button type="button" data-student-monitor="s3"><div class="student-avatar violet">박</div><span><b>박서아</b><small>피드백 후 재제출 준비</small></span><i>확인</i></button></section>',
-    '<section class="today-evidence"><span>SUBMISSION QUEUE</span><h2>새로 도착한 작품</h2><div><b>김하늘 · 교통 신호등</b><p>코드 12블록 · 모듈 3개 · 영상 00:18</p><button type="button" data-review-index="0">평가 초안 확인 →</button></div></section>',
+    '<section class="today-evidence"><span>SUBMISSION QUEUE</span><h2>새로 도착한 작품</h2><div><b>김하늘 · 교통 신호등</b><p>코드 12블록 · 모듈 3/3 · 기능 시험 3/3 · 영상 00:18</p><button type="button" data-review-index="0">채점하기 →</button></div></section>',
     '<section class="class-quick-actions"><span>QUICK ACTIONS</span><h2>학급 운영</h2><button type="button" data-class-tab="curriculum">＋ 차시 배정하기</button><button type="button" data-class-action="announcement">공지 보내기</button><button type="button" data-class-action="download-report">학급 리포트</button></section></aside></div>'
   ].join('');
 }
@@ -133,18 +135,19 @@ export function renderStudentClassDetail(classId) {
     '<div class="classroom-page student-room"><button class="back-link" type="button" data-student-action="class-list">← 참여 반</button><header class="classroom-hero student"><div><p class="classroom-kicker">MY MAKER SPACE</p><h1>', escapeHtml(student.nickname), '의 나의 교실</h1><p>', escapeHtml(classInfo.name), ' · ', escapeHtml(teacher), '</p></div><div class="student-head-actions">', renderRoleSwitch("student"), '</div></header>',
     '<section class="joined-class"><header class="joined-class-header"><div><span>참여 반</span><h2>', escapeHtml(classInfo.name), '</h2><p>', escapeHtml(teacher), '</p></div><b>참여 중</b></header>',
     submitted ? '<section class="next-mission submitted-mission"><div><span>SUBMITTED · 선생님 확인 대기</span><h2>교통 신호등 작품을 잘 제출했어요</h2><p>피드백이 도착하면 나의 교실에서 바로 알려 줄게요. 다음에는 보물 지킴이를 만들어요.</p><div class="mission-tags"><span>코드 저장됨</span><span>모듈 3개</span><span>작동 영상 00:18</span></div></div><div class="mission-visual"><b>제출</b><span>→</span><b>교사 확인</b><span>→</span><b>피드백</b></div><button type="button" data-student-action="work" data-work-id="signal">제출 작품 보기 →</button></section>' : '<section class="next-mission"><div><span>NEXT MISSION · 8월 27일까지</span><h2>보행자 신호 회로를 완성해 볼까요?</h2><p>버튼을 눌렀을 때 LED 신호가 순서대로 바뀌는지 직접 확인해요.</p><div class="mission-tags"><span>체크리스트 4개</span><span>MODI 연결</span><span>작동 영상 제출</span></div></div><div class="mission-visual"><i></i><b>BUTTON</b><span>→</span><b>NETWORK</b><span>→</span><b>LED</b></div><button type="button" data-student-action="continue">이어서 만들기 →</button></section>',
-    '<div class="student-layout"><section><div class="section-heading"><div><span>MY CREATIONS</span><h2>내 작품 갤러리 <small>완성한 작품 ' + works.length + '개</small></h2></div><button class="text-button" type="button" data-student-action="feedback">피드백 모아보기</button></div><div class="work-gallery">', works.map((work) => '<article><div class="work-art ' + work.art + '"><span>MODI</span><i></i><b>' + escapeHtml(work.badge) + '</b></div><div class="work-copy"><small>' + escapeHtml(work.lesson) + ' · ' + escapeHtml(work.status) + '</small><h3>' + escapeHtml(work.title) + '</h3><p>“' + escapeHtml(work.teacherFeedback) + '”</p><button type="button" data-student-action="work" data-work-id="' + escapeHtml(work.id) + '">작품 펼쳐보기 →</button></div></article>').join(''), '</div></section>',
+    '<section class="assigned-student-lessons"><div class="section-heading"><div><span>ASSIGNED LESSONS</span><h2>선생님이 편성한 강의안</h2></div></div><div class="assigned-student-grid">', CLASSROOM_MOCK.lessons.map((lesson) => '<article><span>' + escapeHtml(lesson.date) + '</span><h3>' + lesson.no + '차시 · ' + escapeHtml(lesson.title) + '</h3><p>' + escapeHtml(lesson.type) + ' · ' + escapeHtml(lesson.state) + '</p><button type="button" data-assigned-lesson="elementary-0' + lesson.no + '">강의안 전체 화면</button></article>').join(''), '</div></section>',
+    '<div class="student-layout"><section><div class="section-heading"><div><span>MY SUBMISSIONS</span><h2>나의 제출물 <small>' + works.length + '개</small></h2></div><button class="text-button" type="button" data-student-action="feedback">피드백 모아보기</button></div><div class="work-gallery">', works.map((work) => '<article><div class="work-art ' + work.art + '"><span>MODI</span><i></i><b>' + escapeHtml(work.badge) + '</b></div><div class="work-copy"><small>' + escapeHtml(work.lesson) + ' · ' + escapeHtml(work.status) + '</small><h3>' + escapeHtml(work.title) + '</h3><p>“' + escapeHtml(work.teacherFeedback) + '”</p><button type="button" data-student-action="work" data-work-id="' + escapeHtml(work.id) + '">제출물 보기 →</button></div></article>').join(''), '</div></section>',
     '<aside class="student-side">',
-    '<section class="feedback-card"><span>NEW FEEDBACK</span><h2>새 피드백 2개</h2><div><b>김모디 선생님</b><p>오류를 찾은 뒤 조건 블록을 바꾼 과정이 아주 좋아요.</p></div><div class="ai"><b>AI 튜터 · 생각 힌트</b><p>센서 값이 경계에 있을 때 어떤 일이 생길지 시험해 볼까요?</p></div><button type="button" data-student-action="feedback">모두 보기 →</button></section>',
+    '<section class="feedback-card"><span>TEACHER FEEDBACK</span><h2>확정 피드백</h2><div><b>김모디 선생님</b><p>오류를 찾은 뒤 조건 블록을 바꾼 과정이 아주 좋아요.</p></div><button type="button" data-student-action="feedback">모두 보기 →</button></section>',
     '<section class="badge-card"><div class="badge-seal">★</div><div><span>NEW BADGE</span><h3>끝까지 디버거</h3><p>오류를 수정하고 작품을 작동시켰어요</p><button type="button" data-student-action="badges">배지·인증서 보기 →</button></div></section></aside></div></section></div>'
   ].join('');
 }
 
 export function openReviewPanel(index) {
   const submission = CLASSROOM_MOCK.submissions[index || 0];
-  main.innerHTML = '<div class="classroom-page review-page"><button class="back-link" type="button" data-office-action="back">← 채점 대기열</button><header class="review-header"><div><p class="classroom-kicker">TEACHER REVIEW</p><h1>' + escapeHtml(submission.student) + ' · ' + escapeHtml(submission.work) + '</h1><p>코드 스냅샷, 모듈 구성, 작동 결과를 함께 보고 피드백을 확정하세요.</p></div><span class="ai-draft-label">AI 형성평가 초안</span></header><div class="review-grid"><section class="evidence-panel"><h2>제출 증거</h2><div class="code-snapshot"><div><i></i><i></i><i></i><span>CODE SNAPSHOT</span></div><code>버튼을 누르면<br>&nbsp;&nbsp;LED 색상을 다음 신호로 바꾸기<br>&nbsp;&nbsp;0.8초 기다리기</code></div><div class="module-proof"><b>모듈 구성</b><span>BUTTON</span><i>→</i><span>NETWORK</span><i>→</i><span>LED</span></div><div class="run-proof"><b>작동 결과</b><span>▶ 00:18 작동 영상</span><em>신호 3단계 작동 확인</em></div></section><section class="rubric-editor"><div class="ai-principle"><b>AI가 먼저 살펴봤어요</b><p>아래 내용은 초안입니다. 점수와 문장을 수정한 뒤 선생님이 확정해 주세요.</p></div><h2>루브릭 평가</h2>' + [
-    ["과제 완성도", "요구한 신호 3단계가 모두 작동해요.", 3], ["문제해결 과정", "작동 간격 오류를 찾아 대기 시간을 수정했어요.", 3], ["코드 구조 이해", "입력과 출력 블록을 적절히 연결했어요.", 2], ["확장·창의", "보행 시간 안내음을 추가로 시도했어요.", 2]
-  ].map((row, ri) => '<article class="rubric-row"><div><b>' + row[0] + '</b><span>AI 제안</span></div><div class="score-options">' + [1,2,3].map((score) => '<button type="button" class="' + (score === row[2] ? 'selected' : '') + '" data-rubric-score="' + ri + '-' + score + '">' + score + '</button>').join('') + '</div><textarea rows="2">' + row[1] + '</textarea></article>').join('') + '<label class="final-feedback"><b>학생에게 전할 종합 피드백</b><textarea rows="3">버튼 입력과 LED 출력의 관계를 정확히 이해했어요. 다음에는 신호가 바뀌는 시간을 직접 정해 더 안전한 신호등으로 확장해 보세요.</textarea></label><div class="review-actions"><button type="button" data-office-action="draft">임시 저장</button><button type="button" class="confirm" data-office-action="confirm">교사 평가로 확정 · 전달</button></div></section></div></div>';
+  main.innerHTML = '<div class="classroom-page review-page"><button class="back-link" type="button" data-office-action="back">← 채점 대기열</button><header class="review-header"><div><p class="classroom-kicker">SCORE & CONFIRM</p><h1>' + escapeHtml(submission.student) + ' · ' + escapeHtml(submission.work) + '</h1><p>실제 제출물의 측정 결과로 채점하고 교사가 최종 확정합니다.</p></div><span class="score-total">총점 <b data-score-total>85</b>/100</span></header><div class="review-grid"><section class="evidence-panel"><h2>제출물 측정 결과</h2><div class="evidence-metrics"><article><b>12</b><span>코드 블록</span></article><article><b>3/3</b><span>필수 모듈</span></article><article><b>3/3</b><span>기능 시험</span></article><article><b>00:18</b><span>작동 영상</span></article></div><div class="code-snapshot"><div><i></i><i></i><i></i><span>CODE SNAPSHOT</span></div><code>버튼을 누르면<br>&nbsp;&nbsp;LED 색상을 다음 신호로 바꾸기<br>&nbsp;&nbsp;0.8초 기다리기</code></div><div class="module-proof"><b>모듈 구성</b><span>BUTTON</span><i>→</i><span>NETWORK</span><i>→</i><span>LED</span></div><div class="run-proof"><b>작동 결과</b><span>▶ 00:18 작동 영상</span><em>신호 3단계 모두 통과</em></div></section><section class="rubric-editor"><div class="score-principle"><b>채점 기준이 제출 증거에 연결되어 있습니다.</b><p>각 항목의 실측 결과를 확인하고 점수를 선택한 뒤 평가를 확정하세요.</p></div><h2>정량 평가</h2>' + [
+    ["기능 완성", "기능 시험 3/3 통과", 30, 30, [0, 15, 30]], ["필수 구성", "필수 모듈 3/3 연결", 25, 25, [0, 15, 25]], ["코드 구조", "입력·처리·출력 구조 확인", 25, 20, [0, 20, 25]], ["작동 증거", "18초 영상에서 전체 동작 확인", 20, 10, [0, 10, 20]]
+  ].map((row, ri) => '<article class="rubric-row quantitative"><div><b>' + row[0] + '</b><span>' + row[1] + '</span></div><div class="score-options">' + row[4].map((score) => '<button type="button" class="' + (score === row[3] ? 'selected' : '') + '" data-rubric-score="' + ri + '-' + score + '" data-score="' + score + '">' + score + '</button>').join('') + '<em>/ ' + row[2] + '</em></div></article>').join('') + '<label class="final-feedback"><b>교사 피드백</b><textarea rows="3">필수 기능과 모듈 연결은 모두 통과했습니다. 코드 구조는 명확하며, 다음 제출에서는 전체 작동 과정을 조금 더 길게 촬영해 주세요.</textarea></label><div class="review-actions"><button type="button" data-office-action="draft">채점 저장</button><button type="button" class="confirm" data-office-action="confirm">점수 확정 · 학생에게 전달</button></div></section></div></div>';
   document.title = "평가 확정 · MODI Planet";
 }
 
@@ -169,15 +172,14 @@ export function openWorkDetail(id) {
     '<ul class="test-evidence">', work.tests.map((test) => '<li><span>✓</span>' + escapeHtml(test) + '</li>').join(''), '</ul></section>',
     '<aside class="work-insight"><section><span>MY NOTE</span><h2>내가 남긴 기록</h2><p>“', escapeHtml(work.reflection), '”</p></section>',
     '<section><span>TEACHER FEEDBACK</span><h2>선생님 피드백</h2><p>', escapeHtml(work.teacherFeedback), '</p></section>',
-    '<section class="ai"><span>AI TUTOR</span><h2>다음 생각 힌트</h2><p>', escapeHtml(work.aiFeedback), '</p><button type="button" data-student-action="ask-tutor">힌트 한 단계 더 보기</button></section>',
-    '<section><span>RUBRIC</span><h2>작품에서 확인한 것</h2><div class="student-rubric">', work.rubric.map((row) => '<div><b>' + escapeHtml(row[0]) + '</b><span>' + [1,2,3].map((score) => '<i class="' + (score <= row[1] ? 'filled' : '') + '"></i>').join('') + '</span></div>').join(''), '</div><small>AI 제안을 김모디 선생님이 확인한 평가예요.</small></section></aside></div></div>'
+    '<section><span>SCORE</span><h2>확정 평가</h2><div class="student-rubric">', work.rubric.map((row) => '<div><b>' + escapeHtml(row[0]) + '</b><span>' + [1,2,3].map((score) => '<i class="' + (score <= row[1] ? 'filled' : '') + '"></i>').join('') + '</span></div>').join(''), '</div><small>코드·모듈·작동 결과를 김모디 선생님이 확인하고 확정한 평가예요.</small></section></aside></div></div>'
   ].join('');
   document.title = work.title + " · 나의 교실";
 }
 
 export function openFeedbackArchive() {
   const works = CLASSROOM_MOCK.student.works;
-  main.innerHTML = '<div class="classroom-page feedback-page"><button class="back-link" type="button" data-student-action="back">← 나의 교실</button><header><p class="classroom-kicker">FEEDBACK ARCHIVE</p><h1>내 작품에 도착한 피드백</h1><p>선생님이 확정한 피드백과 AI 튜터의 생각 힌트를 작품별로 모았어요.</p></header><div class="feedback-timeline">' + works.map((work) => '<article><div class="timeline-work"><span>' + escapeHtml(work.lesson) + '</span><h2>' + escapeHtml(work.title) + '</h2><button type="button" data-student-action="work" data-work-id="' + escapeHtml(work.id) + '">작품 보기</button></div><div class="timeline-notes"><section><b>김모디 선생님 · 확정 피드백</b><p>' + escapeHtml(work.teacherFeedback) + '</p></section><section class="ai"><b>AI 튜터 · 생각 힌트</b><p>' + escapeHtml(work.aiFeedback) + '</p></section></div></article>').join('') + '</div></div>';
+  main.innerHTML = '<div class="classroom-page feedback-page"><button class="back-link" type="button" data-student-action="back">← 나의 교실</button><header><p class="classroom-kicker">FEEDBACK ARCHIVE</p><h1>내 제출물의 확정 피드백</h1><p>선생님이 제출 증거를 확인하고 확정한 평가를 모았어요.</p></header><div class="feedback-timeline">' + works.map((work) => '<article><div class="timeline-work"><span>' + escapeHtml(work.lesson) + '</span><h2>' + escapeHtml(work.title) + '</h2><button type="button" data-student-action="work" data-work-id="' + escapeHtml(work.id) + '">제출물 보기</button></div><div class="timeline-notes"><section><b>김모디 선생님 · 확정 피드백</b><p>' + escapeHtml(work.teacherFeedback) + '</p></section></div></article>').join('') + '</div></div>';
   document.title = "받은 피드백 · 나의 교실";
 }
 
@@ -188,7 +190,7 @@ export function openBadgeCollection() {
 }
 
 export function openJoinClass() {
-  main.innerHTML = '<div class="classroom-page join-page"><button class="back-link" type="button" data-student-action="back">← 나의 교실</button><section class="join-card"><div class="join-mark">M</div><p class="classroom-kicker">JOIN A CLASS</p><h1>새로운 반에 참여해요</h1><p>선생님이 알려준 초대코드를 입력하세요. 계정을 만들지 않아도 별명으로 참여할 수 있어요.</p><form id="joinClassForm"><label>초대코드<input name="invite" autocomplete="off" maxlength="12" placeholder="예: MODI-52" required></label><label>교실에서 사용할 별명<input name="nickname" value="하늘이" maxlength="12" required></label><button type="submit">반 확인하기 →</button></form><div class="join-help"><b>초대 링크를 받았나요?</b><span>링크를 열면 초대코드가 자동으로 입력돼요.</span></div></section></div>';
+  main.innerHTML = '<div class="classroom-page join-page"><button class="back-link" type="button" data-student-action="back">← 나의 교실</button><section class="join-card"><div class="join-mark">M</div><p class="classroom-kicker">JOIN A CLASS</p><h1>반에 참여해요</h1><p>초대코드와 학생 이름만 입력하면 이 브라우저의 세션 ID로 참여할 수 있어요.</p><form id="joinClassForm"><label>초대코드<input name="invite" autocomplete="off" maxlength="12" placeholder="예: MODI-52" required></label><label>학생 이름<input name="nickname" value="김하늘" maxlength="20" required></label><button type="submit">반 참여하기 →</button></form><div class="join-help"><b>별명·세션 ID 방식</b><span>계정 없이 참여하며, 같은 기기에서는 이름과 제출물이 이어집니다.</span></div></section></div>';
   document.title = "반 참여 · MODI Planet";
 }
 
@@ -196,4 +198,9 @@ export function openSubmissionComplete() {
   localStorage.setItem(CLASSROOM_KEY + "-submission", "submitted");
   main.innerHTML = '<div class="classroom-page submission-complete"><section><div class="complete-orbit"><i></i><span>✓</span></div><p class="classroom-kicker">SUBMISSION COMPLETE</p><h1>하늘이의 작품이 도착했어요!</h1><p>김모디 선생님이 코드와 작동 결과를 확인한 뒤 피드백을 보내 줄 거예요.</p><div class="submission-ticket"><span>제출 작품</span><b>MODI 교통 신호등</b><span>전달한 증거</span><b>코드 스냅샷 · 모듈 3개 · 작동 영상</b><span>현재 상태</span><b class="waiting">교사 확인 대기</b></div><div class="complete-actions"><button type="button" data-student-action="work" data-work-id="signal">제출한 작품 보기</button><button type="button" class="primary" data-student-action="back">나의 교실로</button></div></section></div>';
   document.title = "제출 완료 · 나의 교실";
+}
+
+export function openCreateClass() {
+  main.innerHTML = '<div class="classroom-page create-class-page"><button class="back-link" type="button" data-office-action="back">← 내 교무실</button><section class="create-class-card"><p class="classroom-kicker">CREATE CLASS</p><h1>새 반 만들기</h1><p>반 정보를 입력하면 학생 초대코드가 자동으로 생성됩니다.</p><form id="createClassForm"><label>반 이름<input name="className" value="별빛 메이커 5-3" required></label><label>학년·과정<input name="grade" value="초등 5학년" required></label><button type="submit">반 생성하기</button></form></section></div>';
+  document.title = "반 생성 · MODI Planet";
 }

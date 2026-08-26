@@ -73,8 +73,22 @@ export function dismissLessonPlayer() {
   if (lessonPlayer.open) {
     lessonPlayer.close();
   }
+  if (document.fullscreenElement === lessonPlayer) {
+    document.exitFullscreen().catch(() => {});
+  }
   document.body.classList.remove("player-open");
+  lessonPlayer.classList.remove("assigned-lesson-player");
   state.activeLesson = null;
+}
+
+export function openAssignedLesson(lesson) {
+  lessonPlayer.classList.add("assigned-lesson-player");
+  startLesson(lesson);
+  if (lessonPlayer.requestFullscreen) {
+    lessonPlayer.requestFullscreen().catch(() => {
+      showToast("브라우저 전체화면을 허용하면 강의안을 더 크게 볼 수 있어요.");
+    });
+  }
 }
 
 export function exitLesson(completed) {
