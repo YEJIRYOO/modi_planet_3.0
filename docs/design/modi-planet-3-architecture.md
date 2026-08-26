@@ -228,6 +228,43 @@ AI와 이야기하며 나만의 Web/MODI 프로젝트를 만들어요.
 
 이후 기존 설계 대화 → 구현 → 미리보기 흐름 사용.
 
+### 5.5 프론트엔드 파일 구조
+
+빌드 단계는 두지 않는다. `web/` 의 파일을 `/static` 으로 그대로 제공하고, 분리는
+브라우저가 이미 아는 수단(ES module `import`, CSS `@import`)만 쓴다.
+
+```text
+web/
+  index.html            # AI LAB 셸
+  lms.html              # 교육과정 셸 (<script type="module">)
+
+  app.css  app.js       # AI LAB — 아직 단일 파일
+
+  lms.css               # @import 목록만 있는 얇은 엔트리
+  lms.js                # events 를 import 하고 boot() 만 호출하는 엔트리
+  lms/
+    css/                # base shell catalog course plan player studio
+                        # preview classroom preview-stage preview-worlds
+                        # mobile preview-chrome lesson-deck lesson-scenes
+    js/                 # config dom state slide-visuals catalog classroom
+                        # plan player slides studio preview tutor routes events
+
+  assets/               # brand, lesson-visuals, worlds
+```
+
+규칙:
+
+- `/static/lms.css`, `/static/lms.js` URL 은 고정이다. 엔트리만 두고 내용은 하위 폴더로 옮긴다.
+- **CSS partial 순서 = 캐스케이드 순서.** 뒤 파일이 앞 파일을 의도적으로 덮는다
+  (`preview-chrome` 이 `preview-stage` 의 transform 을 되돌린다). `lms.css` 의
+  `@import` 순서를 바꾸면 화면이 깨진다.
+- JS 모듈은 도메인 하나씩 맡는다. `config`/`dom`/`state` 는 잎 모듈이고 아무것도
+  import 하지 않거나 서로만 import 한다. `events` 가 최상단에서 배선을 담당한다.
+- `player` ↔ `slides` 처럼 순환 import 가 있다. 함수 선언만 주고받으므로(hoisting)
+  안전하지만, 모듈 평가 시점에 다른 모듈의 `const` 를 읽는 코드를 추가하면 깨진다.
+- 차시 콘텐츠는 여전히 `curriculum/` 데이터다. `lms/js/config.js` 에는 차시 내용이
+  아니라 프리뷰 프리셋·장면 메타처럼 표현 계층 데이터만 둔다.
+
 ---
 
 ## 6. Curriculum 데이터 모델 — 27차시를 코드에 박지 않는다

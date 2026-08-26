@@ -1,0 +1,186 @@
+/* MODI Planet LMS — 차시 교안 다이얼로그
+   lms.css 의 @import 순서에 기대는 파일이다. 순서를 바꾸면 캐스케이드가 달라진다. */
+
+.plan-dialog {
+  width: min(940px, calc(100% - 30px));
+  max-width: none;
+  max-height: min(900px, calc(100vh - 30px));
+  padding: 0;
+  overflow: hidden;
+  background: #fff;
+  border: 0;
+  border-radius: 24px;
+  box-shadow: 0 28px 90px rgba(22, 21, 21, 0.24);
+}
+
+.plan-dialog::backdrop {
+  background: rgba(31, 29, 29, 0.54);
+  backdrop-filter: blur(5px);
+}
+
+.dialog-shell {
+  display: flex;
+  max-height: min(900px, calc(100vh - 30px));
+  flex-direction: column;
+}
+
+.dialog-header {
+  display: flex;
+  padding: 26px 30px 22px;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 20px;
+  border-bottom: 1px solid var(--line);
+}
+
+.dialog-header h2 {
+  margin: 0;
+  font-size: 28px;
+  letter-spacing: -0.03em;
+  line-height: 1.25;
+}
+
+.dialog-kicker {
+  margin-bottom: 7px;
+}
+
+.icon-button {
+  display: grid;
+  width: 40px;
+  height: 40px;
+  flex: 0 0 auto;
+  color: var(--ink-muted);
+  background: var(--surface-soft);
+  border: 0;
+  border-radius: 50%;
+  place-items: center;
+  font-size: 25px;
+  font-weight: 350;
+}
+
+.dialog-body {
+  padding: 28px 30px 34px;
+  overflow-y: auto;
+}
+
+.plan-summary {
+  margin: 0 0 27px;
+  color: var(--ink-sub);
+  font-size: 15px;
+  line-height: 1.75;
+}
+
+.plan-columns {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.plan-section {
+  padding: 20px;
+  background: var(--surface-soft);
+  border: 1px solid var(--line);
+  border-radius: 17px;
+}
+
+.plan-section.full {
+  grid-column: 1 / -1;
+}
+
+.plan-section h3 {
+  margin: 0 0 13px;
+  font-size: 15px;
+}
+
+.plan-section ul {
+  display: grid;
+  margin: 0;
+  padding-left: 19px;
+  gap: 8px;
+  color: var(--ink-sub);
+  font-size: 13px;
+}
+
+.standard-blocks {
+  display: grid;
+  gap: 8px;
+}
+
+.standard-block {
+  padding: 12px 13px;
+  color: var(--ink-sub);
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.standard-block strong {
+  display: block;
+  margin-bottom: 3px;
+  color: var(--blue);
+}
+
+.lesson-timeline {
+  display: grid;
+  gap: 8px;
+}
+
+.timeline-row {
+  display: grid;
+  padding: 12px 13px;
+  grid-template-columns: 60px minmax(0, 1fr) 48px;
+  gap: 12px;
+  align-items: center;
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+}
+
+.timeline-row .phase {
+  color: var(--brand-dark);
+  font-size: 12px;
+  font-weight: 780;
+}
+
+.timeline-row strong {
+  font-size: 13px;
+}
+
+.timeline-row .minutes {
+  color: var(--ink-faint);
+  font-size: 12px;
+  text-align: right;
+}
+
+.assessment-list {
+  display: grid;
+  gap: 9px;
+}
+
+.assessment-item {
+  padding: 12px 13px;
+  background: #fff;
+  border-left: 3px solid var(--brand);
+  border-radius: 0 11px 11px 0;
+  font-size: 13px;
+}
+
+.assessment-item b {
+  display: block;
+  margin-bottom: 3px;
+}
+
+.dialog-footer {
+  display: flex;
+  padding: 17px 30px 22px;
+  justify-content: flex-end;
+  gap: 8px;
+  background: #fff;
+  border-top: 1px solid var(--line);
+}
+
+.dialog-footer button {
+  min-width: 120px;
+}

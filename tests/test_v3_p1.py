@@ -2,6 +2,7 @@
 import json
 import re
 from pathlib import Path
+from urllib.parse import urljoin
 
 import pytest
 
@@ -21,6 +22,36 @@ from curriculum import get_lesson, list_grade_bands, validate_catalog
 def client(monkeypatch):
     monkeypatch.setattr(server, "create_sessions", InMemorySessionStore())
     return TestClient(server.app)
+
+
+_JS_IMPORT = re.compile(r"""import\s+(?:[^;'"]*?\bfrom\s*)?["'](\.{1,2}/[^"']+)["']""")
+_CSS_IMPORT = re.compile(r"""@import\s+url\(\s*["']([^"']+)["']\s*\)""")
+
+
+def frontend_source(client, entry):
+    """Return `entry` plus every module/partial it pulls in, concatenated.
+
+    web/lms.js and web/lms.css are thin entries over web/lms/js/ and web/lms/css/.
+    The frontend contract assertions below describe the LMS as a whole, so they read
+    the resolved graph rather than the entry stub. Walking the real import graph over
+    HTTP also proves every part is actually served.
+    """
+    pattern = _CSS_IMPORT if entry.endswith(".css") else _JS_IMPORT
+    seen, chunks = set(), []
+
+    def visit(url):
+        if url in seen:
+            return
+        seen.add(url)
+        response = client.get(url)
+        assert response.status_code == 200, f"{url} -> {response.status_code}"
+        chunks.append(response.text)
+        for target in pattern.findall(response.text):
+            visit(urljoin(url, target))
+
+    visit(entry)
+    assert len(seen) > 1, f"{entry} pulled in no partials — is the split still wired up?"
+    return "\n".join(chunks)
 
 
 @pytest.mark.parametrize("coding_type", ["react", "blockly", "hybrid"])
@@ -240,19 +271,20 @@ def test_lms_route_serves_the_curriculum_player(client):
 
     logo = client.get("/static/assets/brand/logo.svg")
     player_script = client.get("/static/lms.js")
+    player_source = frontend_source(client, "/static/lms.js")
     assert logo.status_code == 200
     assert "#ff4438" in logo.text.lower()
     assert player_script.status_code == 200
-    assert "data-plan-lesson" in player_script.text
-    assert "data-start-lesson" in player_script.text
+    assert "data-plan-lesson" in player_source
+    assert "data-start-lesson" in player_source
 
 
 def test_mobile_ux_contract_keeps_lms_and_ai_lab_touch_ready(client):
     lms_html = client.get("/lms").text
     app_html = client.get("/").text
-    lms_css = client.get("/static/lms.css").text
+    lms_css = frontend_source(client, "/static/lms.css")
     app_css = client.get("/static/app.css").text
-    lms_script = client.get("/static/lms.js").text
+    lms_script = frontend_source(client, "/static/lms.js")
     app_script = client.get("/static/app.js").text
 
     assert "viewport-fit=cover" in lms_html
@@ -290,8 +322,8 @@ def test_mobile_ux_contract_keeps_lms_and_ai_lab_touch_ready(client):
 
 
 def test_lms_preview_seeds_polished_results_before_generation(client):
-    script = client.get("/static/lms.js").text
-    styles = client.get("/static/lms.css").text
+    script = frontend_source(client, "/static/lms.js")
+    styles = frontend_source(client, "/static/lms.css")
 
     for level in ("elementary", "middle", "high"):
         for lesson_no in range(1, 10):
@@ -314,7 +346,8 @@ def test_lms_preview_seeds_polished_results_before_generation(client):
     assert "seed-world-portal" in script
     assert "seed-world-depth" in script
     assert "function dismissLessonPlayer()" in script
-    assert "if (state.activeLesson) {\n      dismissLessonPlayer();\n    }" in script
+    # routes.js is a module now, so the guard sits one indent level shallower.
+    assert "if (state.activeLesson) {\n    dismissLessonPlayer();\n  }" in script
     assert "샘플 시뮬레이션" in script
     assert 'learningStudio.addEventListener("pointermove"' in script
     assert '"--world-pan-x"' in script
@@ -345,8 +378,8 @@ def test_lms_preview_seeds_polished_results_before_generation(client):
 
 
 def test_lesson_decks_render_unique_layouts_scenes_and_modi_assets(client):
-    script = client.get("/static/lms.js").text
-    styles = client.get("/static/lms.css").text
+    script = frontend_source(client, "/static/lms.js")
+    styles = frontend_source(client, "/static/lms.css")
     html = client.get("/lms").text
 
     required_types = {
