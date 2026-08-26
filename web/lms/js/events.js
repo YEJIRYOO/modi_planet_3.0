@@ -1,19 +1,25 @@
 // MODI Planet LMS — 전역 이벤트 위임과 요소 배선.
 
 import { renderCourse } from "./catalog.js";
-import { openBadgeCollection, openFeedbackArchive, openJoinClass, openReviewPanel, openStudentMonitor, openSubmissionComplete, openSubmitPanel, openWorkDetail, renderClassDetail, renderClassroom, updateRosterView } from "./classroom.js";
+import { openBadgeCollection, openFeedbackArchive, openJoinClass, openReviewPanel, openStudentMonitor, openSubmissionComplete, openSubmitPanel, openWorkDetail, renderClassDetail, renderClassroom, renderStudentClassDetail, updateRosterView } from "./classroom.js?v=20260826-student-class-entry";
 import { CLASSROOM_KEY, CLASSROOM_MOCK } from "./config.js";
 import { asList, learningStudio, lessonPlayer, main, mobileTeacherToggle, planDialog, showToast, studioBackdrop, studioToggle } from "./dom.js";
 import { closePlan, openPlan } from "./plan.js";
 import { exitLesson, setTeacherNoteOpen, startLesson } from "./player.js";
 import { getPreviewExample, handlePreviewPointerMove, handlePreviewPointerOut } from "./preview.js";
-import { boot, route } from "./routes.js";
+import { boot, route } from "./routes.js?v=20260826-student-class-entry";
 import { chooseQuiz, focusCurrentSlide, moveSlide, renderSlide } from "./slides.js";
 import { findLesson, state } from "./state.js";
 import { closeStudio, openStudio, renderStudio, setStudioTab, syncStudioAccessibility, usesMobileStudio } from "./studio.js";
 import { sendTutorMessage, usePrompt } from "./tutor.js";
 
 document.addEventListener("click", (event) => {
+  const studentClass = event.target.closest("[data-student-class]");
+  if (studentClass) {
+    renderStudentClassDetail(studentClass.dataset.studentClass);
+    return;
+  }
+
   const classTab = event.target.closest("[data-class-tab]");
   if (classTab) {
     renderClassDetail(classTab.dataset.classTab);
@@ -81,7 +87,8 @@ document.addEventListener("click", (event) => {
   if (studentAction) {
     const action = studentAction.dataset.studentAction;
     if (action === "submit") openSubmitPanel();
-    else if (action === "back") renderClassroom();
+    else if (action === "class-list") renderClassroom();
+    else if (action === "back") renderStudentClassDetail(localStorage.getItem(CLASSROOM_KEY + "-student-class") || "c1");
     else if (action === "continue") window.location.hash = "#elementary";
     else if (action === "confirm-submit") openSubmissionComplete();
     else if (action === "work") openWorkDetail(studentAction.dataset.workId);

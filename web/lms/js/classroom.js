@@ -25,17 +25,15 @@ export function renderTeacherOffice() {
     '<header class="classroom-hero"><div><p class="classroom-kicker">TEACHER OFFICE</p><h1>안녕하세요, 김모디 선생님</h1><p>작품이 완성되는 순간을 놓치지 않도록 오늘의 수업과 평가를 모았어요.</p></div>', renderRoleSwitch("teacher"), '</header>',
     '<section class="office-alert"><span class="pulse-dot"></span><div><b>오늘 확인할 작품 7개</b><p>AI 평가 초안은 제안일 뿐이에요. 선생님이 확인하고 확정하면 학생에게 전달됩니다.</p></div><button type="button" data-office-action="review">채점 대기열 보기 →</button></section>',
     '<div class="office-grid"><section class="office-main"><div class="section-heading"><div><span>MY CLASSES</span><h2>내 학급</h2></div><button class="soft-button" type="button" data-office-action="new-class">＋ 새 학급</button></div>',
-    '<div class="class-cards">', classes.map((item) => '<article class="class-card"><div class="class-card-top"><span>' + escapeHtml(item.grade) + '</span><button type="button" aria-label="' + escapeHtml(item.name) + ' 더보기">•••</button></div><h3>' + escapeHtml(item.name) + '</h3><div class="class-signal"><b>' + item.active + '</b><span>명의 학생이<br>작품을 만들고 있어요</span></div><dl><div><dt>학생</dt><dd>' + item.students + '명</dd></div><div><dt>확인 대기</dt><dd class="accent">' + item.pending + '개</dd></div></dl><footer><span>' + escapeHtml(item.next) + '</span><button type="button" data-office-action="class" data-class-id="' + escapeHtml(item.id) + '">반 열기 →</button></footer></article>').join(''), '</div>',
-    '<section class="curriculum-board"><div class="section-heading"><div><span>MY CURRICULUM</span><h2>이번 학기 수업 편성</h2></div><button class="text-button" type="button" data-office-action="curriculum">27차시에서 편성하기</button></div><div class="schedule-line">', CLASSROOM_MOCK.lessons.map((lesson) => '<article><span class="lesson-dot"></span><small>' + escapeHtml(lesson.date) + '</small><b>' + lesson.no + '차시 · ' + escapeHtml(lesson.title) + '</b><em>' + escapeHtml(lesson.type) + '</em><i>' + escapeHtml(lesson.state) + '</i></article>').join(''), '</div></section></section>',
+    '<div class="class-cards">', classes.map((item, index) => '<article class="class-card class-card-tone-' + ((index % 3) + 1) + '"><div class="class-card-top"><span>' + escapeHtml(item.grade) + '</span><button type="button" aria-label="' + escapeHtml(item.name) + ' 더보기">•••</button></div><h3>' + escapeHtml(item.name) + '</h3><div class="class-signal"><b>' + item.active + '</b><span>명의 학생이<br>작품을 만들고 있어요</span></div><dl><div><dt>학생</dt><dd>' + item.students + '명</dd></div><div><dt>확인 대기</dt><dd class="accent">' + item.pending + '개</dd></div></dl><footer><span>' + escapeHtml(item.next) + '</span><button type="button" data-office-action="class" data-class-id="' + escapeHtml(item.id) + '">반 열기 →</button></footer></article>').join(''), '</div></section>',
     '<aside class="office-side"><section class="queue-card"><div class="section-heading"><div><span>REVIEW QUEUE</span><h2>채점·확정 대기</h2></div><b class="count-badge">7</b></div><div class="submission-list">', CLASSROOM_MOCK.submissions.map((item, index) => '<button type="button" data-review-index="' + index + '"><span class="work-thumb ' + item.color + '">⚙</span><span><b>' + escapeHtml(item.student) + '</b><small>' + escapeHtml(item.work) + '</small><em>' + escapeHtml(item.time) + '</em></span><i>' + escapeHtml(item.status) + '</i></button>').join(''), '</div><button class="full-soft-button" type="button" data-office-action="review">전체 대기열 보기</button></section>',
-    '<section class="tutor-control"><span>AI TUTOR CONTROL</span><h2>우리 반 힌트 설정</h2><label>힌트 강도 <b>생각 열기</b><input type="range" min="1" max="3" value="2" data-tutor-setting></label><div class="hint-scale"><span>질문만</span><span>생각 열기</span><span>단계 안내</span></div><label class="toggle-row"><span><b>정답 코드 노출 제한</b><small>완성 코드는 직접 보여주지 않아요</small></span><input type="checkbox" checked data-tutor-lock></label></section>',
-    '<section class="report-card"><span>REPORT ARCHIVE</span><h2>지난 리포트</h2><p>별빛 메이커 5-2 · 3차시</p><button type="button" data-office-action="report">리포트 열기 →</button></section></aside></div></div>'
+    '</aside></div></div>'
   ].join('');
 }
 
 export function renderClassTabs(active) {
   return '<nav class="class-detail-tabs" aria-label="학급 관리 메뉴">' + [
-    ["overview", "오늘의 반"], ["roster", "학생 명단"], ["curriculum", "수업 편성"], ["settings", "AI 튜터 설정"]
+    ["overview", "오늘의 반"], ["roster", "학생 명단"], ["curriculum", "My Curriculum · 수업 편성"], ["settings", "AI Tutor Control · 힌트 설정"]
   ].map((tab) => '<button type="button" data-class-tab="' + tab[0] + '" class="' + (active === tab[0] ? 'active' : '') + '">' + tab[1] + '</button>').join('') + '</nav>';
 }
 
@@ -109,15 +107,36 @@ export function openStudentMonitor(id) {
 
 export function renderStudentClassroom() {
   const student = CLASSROOM_MOCK.student;
+  const joinedClasses = CLASSROOM_MOCK.classes.map((classInfo, index) => ({
+    ...classInfo,
+    teacher: index === 0 ? student.teacher : "이메이커 선생님",
+    works: student.works
+  }));
+  return [
+    '<div class="classroom-page student-room student-class-list"><header class="classroom-hero student"><div><p class="classroom-kicker">MY CLASSROOMS</p><h1>', escapeHtml(student.nickname), '의 나의 교실</h1><p>참여 중인 반을 선택해 교실로 들어가세요.</p></div><div class="student-head-actions"><button class="join-class-button" type="button" data-student-action="join">＋ 반 참여</button>', renderRoleSwitch("student"), '</div></header>',
+    '<section><div class="section-heading"><div><span>JOINED CLASSES</span><h2>참여 반 <small>', joinedClasses.length, '개</small></h2></div></div><div class="student-class-cards">',
+    joinedClasses.map((classInfo, index) => '<article class="student-class-card student-class-tone-' + ((index % 3) + 1) + '"><div><span>' + escapeHtml(classInfo.grade) + '</span><b>참여 중</b></div><h2>' + escapeHtml(classInfo.name) + '</h2><p>' + escapeHtml(classInfo.teacher) + '</p><dl><div><dt>내 작품</dt><dd>' + classInfo.works.length + '개</dd></div><div><dt>다음 수업</dt><dd>' + escapeHtml(classInfo.next) + '</dd></div></dl><button type="button" data-student-class="' + escapeHtml(classInfo.id) + '">교실 들어가기 →</button></article>').join(''),
+    '</div></section></div>'
+  ].join('');
+}
+
+export function renderStudentClassDetail(classId) {
+  const student = CLASSROOM_MOCK.student;
+  const selectedIndex = Math.max(0, CLASSROOM_MOCK.classes.findIndex((item) => item.id === classId));
+  const classInfo = CLASSROOM_MOCK.classes[selectedIndex];
+  const teacher = selectedIndex === 0 ? student.teacher : "이메이커 선생님";
   const works = student.works;
   const submitted = localStorage.getItem(CLASSROOM_KEY + "-submission") === "submitted";
-  return [
-    '<div class="classroom-page student-room"><header class="classroom-hero student"><div><p class="classroom-kicker">MY MAKER SPACE</p><h1>', escapeHtml(student.nickname), '의 나의 교실</h1><p>', escapeHtml(student.className), ' · ', escapeHtml(student.teacher), '</p></div><div class="student-head-actions"><button class="join-class-button" type="button" data-student-action="join">＋ 반 참여</button>', renderRoleSwitch("student"), '</div></header>',
+  localStorage.setItem(CLASSROOM_KEY + "-student-class", classInfo.id);
+  document.title = classInfo.name + " · 나의 교실";
+  main.innerHTML = [
+    '<div class="classroom-page student-room"><button class="back-link" type="button" data-student-action="class-list">← 참여 반</button><header class="classroom-hero student"><div><p class="classroom-kicker">MY MAKER SPACE</p><h1>', escapeHtml(student.nickname), '의 나의 교실</h1><p>', escapeHtml(classInfo.name), ' · ', escapeHtml(teacher), '</p></div><div class="student-head-actions">', renderRoleSwitch("student"), '</div></header>',
+    '<section class="joined-class"><header class="joined-class-header"><div><span>참여 반</span><h2>', escapeHtml(classInfo.name), '</h2><p>', escapeHtml(teacher), '</p></div><b>참여 중</b></header>',
     submitted ? '<section class="next-mission submitted-mission"><div><span>SUBMITTED · 선생님 확인 대기</span><h2>교통 신호등 작품을 잘 제출했어요</h2><p>피드백이 도착하면 나의 교실에서 바로 알려 줄게요. 다음에는 보물 지킴이를 만들어요.</p><div class="mission-tags"><span>코드 저장됨</span><span>모듈 3개</span><span>작동 영상 00:18</span></div></div><div class="mission-visual"><b>제출</b><span>→</span><b>교사 확인</b><span>→</span><b>피드백</b></div><button type="button" data-student-action="work" data-work-id="signal">제출 작품 보기 →</button></section>' : '<section class="next-mission"><div><span>NEXT MISSION · 8월 27일까지</span><h2>보행자 신호 회로를 완성해 볼까요?</h2><p>버튼을 눌렀을 때 LED 신호가 순서대로 바뀌는지 직접 확인해요.</p><div class="mission-tags"><span>체크리스트 4개</span><span>MODI 연결</span><span>작동 영상 제출</span></div></div><div class="mission-visual"><i></i><b>BUTTON</b><span>→</span><b>NETWORK</b><span>→</span><b>LED</b></div><button type="button" data-student-action="continue">이어서 만들기 →</button></section>',
     '<div class="student-layout"><section><div class="section-heading"><div><span>MY CREATIONS</span><h2>내 작품 갤러리 <small>완성한 작품 ' + works.length + '개</small></h2></div><button class="text-button" type="button" data-student-action="feedback">피드백 모아보기</button></div><div class="work-gallery">', works.map((work) => '<article><div class="work-art ' + work.art + '"><span>MODI</span><i></i><b>' + escapeHtml(work.badge) + '</b></div><div class="work-copy"><small>' + escapeHtml(work.lesson) + ' · ' + escapeHtml(work.status) + '</small><h3>' + escapeHtml(work.title) + '</h3><p>“' + escapeHtml(work.teacherFeedback) + '”</p><button type="button" data-student-action="work" data-work-id="' + escapeHtml(work.id) + '">작품 펼쳐보기 →</button></div></article>').join(''), '</div></section>',
-    '<aside class="student-side"><section class="today-list"><span>NOW & NEXT</span><h2>지금 할 일</h2><label><input type="checkbox" checked><span><b>신호 순서 설계하기</b><small>완료했어요</small></span></label><label><input type="checkbox"><span><b>실제 모듈로 작동 확인</b><small>4차시 · 활동실</small></span></label><label><input type="checkbox"><span><b>제출 전 자기점검</b><small>루브릭 4개 항목</small></span></label><button type="button" data-student-action="submit">작품 제출 준비</button></section>',
+    '<aside class="student-side">',
     '<section class="feedback-card"><span>NEW FEEDBACK</span><h2>새 피드백 2개</h2><div><b>김모디 선생님</b><p>오류를 찾은 뒤 조건 블록을 바꾼 과정이 아주 좋아요.</p></div><div class="ai"><b>AI 튜터 · 생각 힌트</b><p>센서 값이 경계에 있을 때 어떤 일이 생길지 시험해 볼까요?</p></div><button type="button" data-student-action="feedback">모두 보기 →</button></section>',
-    '<section class="badge-card"><div class="badge-seal">★</div><div><span>NEW BADGE</span><h3>끝까지 디버거</h3><p>오류를 수정하고 작품을 작동시켰어요</p><button type="button" data-student-action="badges">배지·인증서 보기 →</button></div></section></aside></div></div>'
+    '<section class="badge-card"><div class="badge-seal">★</div><div><span>NEW BADGE</span><h3>끝까지 디버거</h3><p>오류를 수정하고 작품을 작동시켰어요</p><button type="button" data-student-action="badges">배지·인증서 보기 →</button></div></section></aside></div></section></div>'
   ].join('');
 }
 

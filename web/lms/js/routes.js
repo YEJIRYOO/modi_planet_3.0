@@ -1,7 +1,7 @@
 // MODI Planet LMS — 해시 라우팅과 부팅.
 
 import { fetchCatalog, renderCourse, renderLevelIndex, updateProductRail } from "./catalog.js";
-import { renderClassroom } from "./classroom.js";
+import { renderClassroom } from "./classroom.js?v=20260826-student-class-entry";
 import { LEVELS } from "./config.js";
 import { escapeHtml, main } from "./dom.js";
 import { dismissLessonPlayer } from "./player.js";
